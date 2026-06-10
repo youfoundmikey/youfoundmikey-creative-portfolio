@@ -194,13 +194,11 @@ async function openFitsFolder() {
   mountModal(overlay);
 }
 
-function openDesignFolder() {
-  const projects = [
-    { name: 'Add project', type: 'Website', color: '#F59C9A', emoji: '🌐' },
-    { name: 'Add project', type: 'Album Cover', color: '#FFBE98', emoji: '🎨' },
-    { name: 'Add project', type: 'Clothing', color: '#FFE7AB', emoji: '👕' },
-    { name: 'Add project', type: 'Branding', color: '#C5DBA9', emoji: '✏️' },
-  ];
+async function openDesignFolder() {
+  let projects = [];
+  try {
+    projects = await sanityFetch(`*[_type == "designProject"] | order(order asc, _createdAt desc)`);
+  } catch(e) {}
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -215,15 +213,19 @@ function openDesignFolder() {
       <div class="design-body">
         <p class="design-section-title">Work</p>
         <div class="design-grid">
-          ${projects.map(p => `
+          ${projects.length ? projects.map(p => `
             <div class="design-card">
-              <div class="design-preview" style="background:${p.color};">${p.emoji}</div>
+              <div class="design-preview" style="background:${p.color || '#FFE7AB'};">
+                ${p.images?.[0]?.asset?._ref
+                  ? `<img src="${imageUrl(p.images[0].asset._ref)}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" alt=""/>`
+                  : (p.emoji || '🎨')}
+              </div>
               <div class="design-info">
-                <div class="design-name">${p.name}</div>
-                <div class="design-type">${p.type}</div>
+                <div class="design-name">${p.name || ''}</div>
+                <div class="design-type">${p.type || ''}</div>
               </div>
             </div>
-          `).join('')}
+          `).join('') : '<p style="padding:24px;color:rgba(255,255,255,0.3);">nothing to see here yet.</p>'}
         </div>
       </div>
     </div>
