@@ -157,16 +157,11 @@ function openProjectDetail(p) {
   mountModal(overlay);
 }
 
-function openFitsFolder() {
-  // Placeholder fits — add { photo: 'filename.jpg', date: 'Jan 2025', desc: '...' } entries
-  const fits = [
-    { date: 'Add date', desc: 'Add outfit description here.' },
-    { date: 'Add date', desc: 'Add outfit description here.' },
-    { date: 'Add date', desc: 'Add outfit description here.' },
-    { date: 'Add date', desc: 'Add outfit description here.' },
-    { date: 'Add date', desc: 'Add outfit description here.' },
-    { date: 'Add date', desc: 'Add outfit description here.' },
-  ];
+async function openFitsFolder() {
+  let fits = [];
+  try {
+    fits = await sanityFetch(`*[_type == "fit"] | order(order asc, _createdAt desc)`);
+  } catch(e) {}
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -181,17 +176,17 @@ function openFitsFolder() {
       <div class="fits-body">
         <p class="fits-header">Archive</p>
         <div class="fits-grid">
-          ${fits.map(f => `
+          ${fits.length ? fits.map(f => `
             <div class="fit-card">
-              ${f.photo
-                ? `<img class="fit-photo" src="fits/${f.photo}" alt=""/>`
+              ${f.photo?.asset?._ref
+                ? `<img class="fit-photo" src="${imageUrl(f.photo.asset._ref)}" alt=""/>`
                 : `<div class="fit-photo-placeholder">👗</div>`}
               <div class="fit-info">
-                <div class="fit-date">${f.date}</div>
-                <div class="fit-desc">${f.desc}</div>
+                <div class="fit-date">${f.date || ''}</div>
+                <div class="fit-desc">${f.desc || ''}</div>
               </div>
             </div>
-          `).join('')}
+          `).join('') : '<p style="padding:24px;color:rgba(255,255,255,0.3);">nothing to see here yet.</p>'}
         </div>
       </div>
     </div>
