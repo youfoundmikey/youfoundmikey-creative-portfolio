@@ -140,7 +140,7 @@ function openProjectDetail(p) {
           </div>` : ''}
           <div class="pd-note">
             <p class="pd-note-label">notes</p>
-            <p class="pd-note-text">${p.desc || 'Add your notes about this project in Sanity.'}</p>
+            <p class="pd-note-text">${p.desc || 'nothing to see here yet.'}</p>
           </div>
         </div>
 
@@ -294,7 +294,7 @@ async function openThingsFolder() {
     const filtered = filter === 'All' ? items : items.filter(i => i.category === filter);
     return filtered.length
       ? filtered.map(renderCard).join('')
-      : `<p class="til-empty">Nothing here yet — add some in Sanity!</p>`;
+      : `<p class="til-empty">nothing to see here yet.</p>`;
   }
 
   const overlay = document.createElement('div');
