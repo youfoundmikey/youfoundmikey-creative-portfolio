@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(cp /var/folders/*/T/*/uploads/*.jpg /Users/youfoundmikey/Desktop/website/me.jpg)",
+      "Bash(cp /var/folders/*/T/*/uploads/*.jpeg /Users/youfoundmikey/Desktop/website/me.jpg)",
+      "Bash(cp /var/folders/*/T/*/uploads/*.png /Users/youfoundmikey/Desktop/website/me.jpg)",
+      "Bash(find /var/folders -name \"*.jpg\" -o -name \"*.jpeg\" -o -name \"*.png\" 2>/dev/null | grep -i upload | head -5)",
+      "Bash(find ~/Downloads ~/Desktop -maxdepth 2 \\\\\\( -name \"*.jpg\" -o -name \"*.jpeg\" -o -name \"*.png\" \\\\\\) -newer /Users/youfoundmikey/Desktop/website/index.html 2>/dev/null | head -10)",
+      "WebFetch(domain:untitled.stream)",
+      "Bash(npx sanity *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)"
+    ]
+  }
+}
