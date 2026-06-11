@@ -1961,9 +1961,15 @@ body {
     padding: 16px !important;
   }
 
-  .pd-embed-wrap,
+  .pd-embed-wrap {
+    height: auto !important;
+    width: 100%;
+  }
+
   .pd-embed-wrap iframe {
-    height: 220px !important;
+    width: 100% !important;
+    height: 352px !important;
+    min-height: 0;
   }
 
   .pd-right {
