@@ -18,11 +18,7 @@ body {
 .desktop {
   width: 100vw;
   height: 100vh;
-  background-color: #2a2a2a;
-  background-image: url('MUSIC.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: radial-gradient(ellipse at 30% 40%, #1e1030 0%, #0d0d14 55%, #090910 100%);
   position: relative;
   display: flex;
   flex-direction: column;
