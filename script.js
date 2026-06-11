@@ -83,7 +83,7 @@ async function openMusicFolder() {
     </div>
   `;
 
-  mountModal(overlay);
+  mountModal(overlay, 'music');
 
   overlay.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -189,7 +189,7 @@ async function openFitsFolder() {
       </div>
     </div>
   `;
-  mountModal(overlay);
+  mountModal(overlay, 'fits');
 
   overlay.querySelectorAll('.fit-photo').forEach(img => {
     img.style.cursor = 'zoom-in';
@@ -241,7 +241,7 @@ async function openDesignFolder() {
       </div>
     </div>
   `;
-  mountModal(overlay);
+  mountModal(overlay, 'design');
 }
 
 async function openThingsFolder() {
@@ -330,7 +330,7 @@ async function openThingsFolder() {
     </div>
   `;
 
-  mountModal(overlay);
+  mountModal(overlay, 'things');
 
   overlay.querySelectorAll('.til-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -341,14 +341,14 @@ async function openThingsFolder() {
   });
 }
 
-function mountModal(overlay) {
+function mountModal(overlay, folderKey) {
   document.body.appendChild(overlay);
+  if (folderKey) location.hash = folderKey;
   const close = () => {
     overlay.style.opacity = '0';
     overlay.style.transition = 'opacity 0.15s';
-    setTimeout(() => {
-      overlay.remove();
-    }, 150);
+    setTimeout(() => { overlay.remove(); }, 150);
+    if (folderKey) history.replaceState(null, '', ' ');
   };
   overlay.querySelector('.js-close').addEventListener('click', close);
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
@@ -409,3 +409,7 @@ document.addEventListener('mouseup', () => {
 document.querySelectorAll('.folder[data-folder]').forEach(el => {
   el.addEventListener('dblclick', e => { if (didDrag) e.stopImmediatePropagation(); });
 });
+
+// Restore open folder on page refresh via URL hash
+const hashFolder = location.hash.replace('#', '');
+if (hashFolder) openFolder(hashFolder);
