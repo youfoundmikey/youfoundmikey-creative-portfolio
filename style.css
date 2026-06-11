@@ -1840,3 +1840,174 @@ body {
 .pd-photo-empty {
   min-height: 120px;
 }
+
+/* ════════════════════════════════════════
+   MOBILE RESPONSIVE  (≤ 768px)
+   ════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Body / Desktop ── */
+  body { overflow: auto; }
+
+  .desktop {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  /* ── Hide traffic lights on mobile (no window to close) ── */
+  .traffic-lights { display: none; }
+
+  /* ── Topbar ── */
+  .topbar-right {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: center;
+    gap: 16px;
+    z-index: 200;
+  }
+
+  /* ── Portrait shrinks ── */
+  .desktop-portrait {
+    height: 40vh;
+    opacity: 0.35;
+  }
+
+  /* ── Desktop area: switch to a 2×2 grid ── */
+  .desktop-area {
+    position: relative;
+    inset: auto;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 80px 24px 40px;
+    height: auto;
+  }
+
+  /* ── Folders: static inside the grid ── */
+  .folder {
+    position: static !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .folder-icon {
+    width: 90px;
+    height: 90px;
+  }
+
+  .icon-name {
+    font-size: 12px;
+  }
+
+  /* ── Modals: full screen ── */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-window {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow-y: auto;
+  }
+
+  /* ── Music grid: single column ── */
+  .music-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .project-card {
+    padding: 16px 12px !important;
+  }
+
+  /* ── Project detail: stack vertically ── */
+  .pd-window {
+    width: 100vw !important;
+    height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pd-body {
+    flex-direction: column !important;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .pd-left {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  .pd-embed-wrap,
+  .pd-embed-wrap iframe {
+    height: 220px !important;
+  }
+
+  .pd-right {
+    width: 100% !important;
+    padding: 16px !important;
+    overflow-y: visible;
+  }
+
+  .pd-photos {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Fits grid ── */
+  .fits-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .fit-photo {
+    height: 160px !important;
+  }
+
+  /* ── Design grid ── */
+  .design-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  /* ── Things I Like ── */
+  .til-window {
+    width: 100vw !important;
+    height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+
+  .til-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .til-filters {
+    flex-wrap: wrap;
+    gap: 6px !important;
+  }
+
+  .til-filter-btn {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+
+  .til-title {
+    font-size: 22px !important;
+  }
+}

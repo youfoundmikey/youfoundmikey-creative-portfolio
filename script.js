@@ -343,22 +343,31 @@ function mountModal(overlay) {
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
+const isMobile = () => window.innerWidth <= 768;
+
+function openFolder(f) {
+  if (f === 'music')       openMusicFolder();
+  else if (f === 'fits')   openFitsFolder();
+  else if (f === 'design') openDesignFolder();
+  else if (f === 'things') openThingsFolder();
+}
+
 document.querySelectorAll('.folder[data-folder]').forEach(el => {
-  el.addEventListener('dblclick', () => {
-    const f = el.dataset.folder;
-    if (f === 'music')  openMusicFolder();
-    else if (f === 'fits')   openFitsFolder();
-    else if (f === 'design') openDesignFolder();
-    else if (f === 'things') openThingsFolder();
+  // Desktop: double-click
+  el.addEventListener('dblclick', () => openFolder(el.dataset.folder));
+  // Mobile: single tap
+  el.addEventListener('click', () => {
+    if (isMobile()) openFolder(el.dataset.folder);
   });
 });
 
 
-// Drag folders
+// Drag folders (desktop only)
 let dragging = null, ox = 0, oy = 0, didDrag = false;
 
 document.querySelectorAll('.folder').forEach(el => {
   el.addEventListener('mousedown', e => {
+    if (isMobile()) return;
     dragging = el;
     didDrag = false;
     const rect = el.getBoundingClientRect();
