@@ -126,7 +126,6 @@ function openProjectDetail(p) {
           <h1 class="pd-hero-title">${p.title}</h1>
           <p class="pd-hero-artist">youfoundmikey</p>
         </div>
-        ${p.url ? `<a href="${p.url}" target="_blank" class="pd-hero-btn">Listen on untitled.stream ↗</a>` : ''}
       </div>
 
       <!-- Body -->
