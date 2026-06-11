@@ -24,6 +24,18 @@ body {
   flex-direction: column;
 }
 
+/* ── Desktop portrait ── */
+.desktop-portrait {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 80vh;
+  width: auto;
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ── Top Right Bar ── */
 .topbar-right {
   position: absolute;
