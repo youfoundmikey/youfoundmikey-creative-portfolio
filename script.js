@@ -190,6 +190,19 @@ async function openFitsFolder() {
     </div>
   `;
   mountModal(overlay);
+
+  overlay.querySelectorAll('.fit-photo').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => openLightbox(img.src));
+  });
+}
+
+function openLightbox(src) {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox-overlay';
+  lb.innerHTML = `<img class="lightbox-img" src="${src}" alt=""/>`;
+  document.body.appendChild(lb);
+  lb.addEventListener('click', () => lb.remove());
 }
 
 async function openDesignFolder() {
