@@ -122,8 +122,7 @@ function openProjectDetail(p) {
           <div class="modal-btn max"></div>
         </div>
         <div class="pd-hero-text">
-          <span class="pd-hero-emoji">${p.emoji}</span>
-          <h1 class="pd-hero-title">${p.title}</h1>
+          <h1 class="pd-hero-title">${p.title.replace(/\p{Emoji}/gu, '').trim()}</h1>
           <p class="pd-hero-artist">youfoundmikey</p>
         </div>
       </div>
