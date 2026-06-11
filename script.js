@@ -103,7 +103,7 @@ function openProjectDetail(p) {
     return `
       <div class="pd-photo">
         ${src
-          ? `<img src="music/${src}" alt=""/>`
+          ? `<img src="${src}" alt=""/>`
           : `<div class="pd-photo-empty">📷</div>`}
         <div class="pd-caption">${caption || '<span class="pd-caption-empty">add caption</span>'}</div>
       </div>`;
