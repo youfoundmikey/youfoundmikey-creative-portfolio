@@ -70,12 +70,15 @@ async function openMusicFolder() {
         <span class="modal-title">Music</span>
       </div>
       <div class="modal-body music-body">
-        <div class="music-grid">
+        <div class="music-list">
           ${musicProjects.map((p, i) => `
-            <div class="project-card" style="background:${p.color};" data-project-index="${i}">
-              <div class="project-emoji">${p.emoji}</div>
-              <div class="project-title">${p.title}</div>
-              <div class="project-tag">open ↗</div>
+            <div class="music-list-item" data-project-index="${i}">
+              <div class="music-list-accent" style="background:${p.color};"></div>
+              <div class="music-list-num">${String(i + 1).padStart(2, '0')}</div>
+              <div class="music-list-info">
+                <div class="music-list-title">${p.title.replace(/\p{Emoji}/gu, '').trim()}</div>
+              </div>
+              <div class="music-list-arrow">→</div>
             </div>
           `).join('')}
         </div>
@@ -85,7 +88,7 @@ async function openMusicFolder() {
 
   mountModal(overlay, 'music');
 
-  overlay.querySelectorAll('.project-card').forEach(card => {
+  overlay.querySelectorAll('.music-list-item').forEach(card => {
     card.addEventListener('click', () => {
       const p = musicProjects[card.dataset.projectIndex];
       overlay.remove();

@@ -198,19 +198,70 @@ body {
 }
 
 .music-body {
-  padding: 28px;
+  padding: 0;
   height: calc(80vh - 44px);
   display: flex;
   flex-direction: column;
-  background: #f5f0eb;
+  background: #111;
+  overflow-y: auto;
 }
 
-.music-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 16px;
+.music-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.music-list-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 28px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.music-list-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.music-list-accent {
+  width: 4px;
+  height: 44px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.music-list-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.08em;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.music-list-info {
   flex: 1;
+}
+
+.music-list-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -0.01em;
+}
+
+.music-list-arrow {
+  font-size: 18px;
+  color: rgba(255,255,255,0.2);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.music-list-item:hover .music-list-arrow {
+  color: rgba(255,255,255,0.7);
+  transform: translateX(4px);
 }
 
 .project-card {
