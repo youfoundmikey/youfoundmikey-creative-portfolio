@@ -1807,10 +1807,10 @@ body {
 
 .pd-embed-wrap {
   flex-shrink: 0;
-  height: 340px;
+  height: 500px;
 }
 
-.pd-embed-wrap iframe { height: 340px !important; }
+.pd-embed-wrap iframe { height: 500px !important; }
 
 .pd-note { flex-shrink: 0; }
 
