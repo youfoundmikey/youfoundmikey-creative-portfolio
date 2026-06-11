@@ -1800,7 +1800,7 @@ body {
 
 .pd-left {
   width: 52%;
-  overflow: hidden;
+  overflow-y: auto;
   padding: 20px;
   gap: 14px;
 }
@@ -1810,7 +1810,7 @@ body {
   height: auto;
 }
 
-.pd-embed-wrap iframe { height: 700px !important; }
+.pd-embed-wrap iframe { height: 350px !important; }
 
 .pd-note { flex-shrink: 0; }
 
