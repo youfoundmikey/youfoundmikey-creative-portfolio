@@ -1945,37 +1945,48 @@ body {
     width: 100vw !important;
     height: 92vh !important;
     border-radius: 20px 20px 0 0 !important;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+  }
+
+  .pd-hero {
+    width: 100%;
   }
 
   .pd-body {
-    flex-direction: column !important;
-    overflow-y: auto;
-    height: auto;
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
 
   .pd-left {
     width: 100% !important;
+    overflow: visible !important;
     padding: 16px !important;
+    display: block !important;
   }
 
   .pd-embed-wrap {
     height: auto !important;
-    width: 100%;
+    flex-shrink: unset !important;
   }
 
   .pd-embed-wrap iframe {
     width: 100% !important;
-    height: 352px !important;
-    min-height: 0;
+    height: 300px !important;
+  }
+
+  .pd-note {
+    margin-top: 12px;
   }
 
   .pd-right {
     width: 100% !important;
+    overflow: visible !important;
     padding: 16px !important;
-    overflow-y: visible;
+    display: block !important;
   }
 
   .pd-photos {
