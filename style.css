@@ -1847,12 +1847,16 @@ body {
 @media (max-width: 768px) {
 
   /* ── Body / Desktop ── */
-  body { overflow: auto; }
+  body {
+    overflow: auto;
+    background: radial-gradient(ellipse at 30% 40%, #1e1030 0%, #0d0d14 55%, #090910 100%);
+  }
 
   .desktop {
     height: auto;
     min-height: 100vh;
     overflow: auto;
+    background: transparent;
   }
 
   /* ── Hide traffic lights on mobile (no window to close) ── */
@@ -1871,8 +1875,14 @@ body {
 
   /* ── Portrait shrinks ── */
   .desktop-portrait {
-    height: 40vh;
+    position: fixed;
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 55vh;
     opacity: 0.35;
+    z-index: 0;
   }
 
   /* ── Desktop area: switch to a 2×2 grid ── */
