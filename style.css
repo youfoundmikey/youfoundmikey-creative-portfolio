@@ -1519,7 +1519,7 @@ body {
   box-shadow: none;
 }
 .pd-note-label { color: rgba(255,255,255,0.3); }
-.pd-note-text  { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7; }
+.pd-note-text  { color: rgba(255,255,255,0.7); font-size: 17px; line-height: 1.7; }
 
 .pd-emoji  { font-size: 40px; }
 .pd-title  { color: rgba(255,255,255,0.95); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
@@ -1653,7 +1653,7 @@ body {
   font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 8px;
 }
-.pd-note-text { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+.pd-note-text { font-size: 17px; color: rgba(255,255,255,0.6); line-height: 1.7; }
 
 .pd-right { gap: 0; padding: 0; overflow-y: auto; background: #161616; }
 .pd-header { padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 6px; }
