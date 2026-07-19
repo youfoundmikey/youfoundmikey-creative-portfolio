@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  /* svh is stable when the iOS keyboard opens — no layout shift */
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Inputs use the system font on purpose — 16px minimum so iOS never zooms */
+input,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  font-size: 16px;
+}
+
+textarea {
+  resize: none;
+}
+
+::selection {
+  background: #ff4000;
+  color: #f6f1e7;
+}
