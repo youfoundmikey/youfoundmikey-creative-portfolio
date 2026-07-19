@@ -10,8 +10,14 @@ import { compressIfImage } from "@/lib/compress";
 import { haptic } from "@/lib/haptics";
 
 const DRAFT_KEY = "post-draft";
+const SIZE_WARN = 4 * 1024 * 1024; // Vercel bodies cap at 4.5MB — warn near it
 
 type Status = "idle" | "compressing" | "uploading" | "error";
+
+interface Picked {
+  file: File;
+  url: string;
+}
 
 function fmtSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -19,8 +25,7 @@ function fmtSize(bytes: number) {
 }
 
 export default function Composer() {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [picked, setPicked] = useState<Picked[]>([]);
   const [dest, setDest] = useState<DestinationId | null>(null);
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
@@ -102,41 +107,58 @@ export default function Composer() {
     }
   }, [caption]);
 
-  // ---- file selection + preview
-  const onPick = useCallback(
-    (picked: File | null) => {
-      if (!picked) return;
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setFile(picked);
-      setPreviewUrl(URL.createObjectURL(picked));
-      setStatus("idle");
-      setErrorMsg("");
-    },
-    [previewUrl]
-  );
+  // ---- file selection + previews
+  const addFiles = useCallback((list: FileList | null) => {
+    if (!list || list.length === 0) return;
+    const additions = Array.from(list)
+      .filter((f) => f.type.startsWith("image/"))
+      .map((file) => ({ file, url: URL.createObjectURL(file) }));
+    if (additions.length === 0) return;
+    setPicked((prev) => [...prev, ...additions]);
+    setStatus("idle");
+    setErrorMsg("");
+  }, []);
+
+  const removeFile = useCallback((index: number) => {
+    setPicked((prev) => {
+      const target = prev[index];
+      if (target) URL.revokeObjectURL(target.url);
+      return prev.filter((_, i) => i !== index);
+    });
+  }, []);
+
+  const clearFiles = useCallback(() => {
+    setPicked((prev) => {
+      prev.forEach((p) => URL.revokeObjectURL(p.url));
+      return [];
+    });
+  }, []);
 
   // Photo optional for music (embed-first) and for TIL link items (no image field)
   const isTilLink = dest === "thingsILike" && tilKind !== "photo";
   const photoRequired = dest !== "musicProject" && !isTilLink;
 
+  const totalSize = picked.reduce((sum, p) => sum + p.file.size, 0);
+
   // ---- publish
   async function publish() {
     if (!destination || status === "uploading") return;
-    if (photoRequired && !file) return;
+    if (photoRequired && picked.length === 0) return;
     if (destination.titleRequired && !title.trim()) return;
+    if (isTilLink && !linkUrl.trim()) return;
 
     setErrorMsg("");
-    let upload: File | null = null;
-    if (file && !isTilLink) {
+    let uploads: File[] = [];
+    if (picked.length > 0 && !isTilLink) {
       setStatus("compressing");
-      upload = await compressIfImage(file);
+      uploads = await Promise.all(picked.map((p) => compressIfImage(p.file)));
     }
 
     setStatus("uploading");
     setProgress(0);
 
     const form = new FormData();
-    if (upload) form.append("file", upload, upload.name);
+    uploads.forEach((f) => form.append("files", f, f.name));
     form.append("destination", destination.id);
     form.append("title", title.trim());
     form.append("caption", caption.trim());
@@ -163,9 +185,7 @@ export default function Composer() {
       if (xhr.status >= 200 && xhr.status < 300) {
         // Success: buzz, wipe, done. Back to zero, ready for the next one.
         haptic();
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        setFile(null);
-        setPreviewUrl(null);
+        clearFiles();
         setDest(null);
         setTitle("");
         setCaption("");
@@ -204,7 +224,7 @@ export default function Composer() {
 
   const canPublish =
     !!destination &&
-    (!photoRequired || !!file) &&
+    (!photoRequired || picked.length > 0) &&
     (!destination.titleRequired || !!title.trim()) &&
     (!isTilLink || !!linkUrl.trim()) &&
     status !== "uploading";
@@ -218,47 +238,86 @@ export default function Composer() {
         </h1>
       </header>
 
-      {/* ---- media area: one big target ---- */}
+      {/* ---- media area ---- */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        multiple={dest !== "fit"}
         className="hidden"
-        onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+        onChange={(e) => {
+          addFiles(e.target.files);
+          e.target.value = "";
+        }}
       />
 
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        className="mx-6 mt-2 flex min-h-[34svh] flex-col items-center justify-center overflow-hidden bg-ink/[0.04] active:bg-ink/[0.08]"
-        aria-label={file ? "Replace photo" : "Add photo"}
-      >
-        {previewUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={previewUrl}
-            alt="Preview"
-            className="h-full max-h-[34svh] w-full object-contain"
-          />
-        ) : (
-          <>
-            <span className="font-heading text-5xl italic text-ink/30">
-              tap
-            </span>
-            <span className="mt-1 text-sm text-ink/40">
-              {isTilLink
-                ? "links don't need a photo"
-                : dest === "musicProject"
-                  ? "add a photo (optional)"
-                  : "add a photo"}
-            </span>
-          </>
-        )}
-      </button>
+      {picked.length === 0 ? (
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="mx-6 mt-2 flex min-h-[34svh] flex-col items-center justify-center bg-ink/[0.04] active:bg-ink/[0.08]"
+          aria-label="Add photos"
+        >
+          <span className="font-heading text-5xl italic text-ink/30">tap</span>
+          <span className="mt-1 text-sm text-ink/40">
+            {isTilLink
+              ? "links don't need a photo"
+              : dest === "musicProject"
+                ? "add photos (optional)"
+                : dest === "fit"
+                  ? "add a photo"
+                  : "add photos — one or many"}
+          </span>
+        </button>
+      ) : (
+        <div className="mx-6 mt-2 grid max-h-[38svh] grid-cols-3 gap-1.5 overflow-y-auto">
+          {picked.map((p, i) => (
+            <div key={p.url} className="relative aspect-square">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={p.url}
+                alt={`Photo ${i + 1}`}
+                className="h-full w-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => removeFile(i)}
+                className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-paper"
+                aria-label={`Remove photo ${i + 1}`}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          {dest !== "fit" && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex aspect-square items-center justify-center bg-ink/[0.06] text-3xl text-ink/40 active:bg-ink/[0.1]"
+              aria-label="Add more photos"
+            >
+              +
+            </button>
+          )}
+        </div>
+      )}
 
-      {file && (
+      {picked.length > 0 && (
         <p className="px-6 pt-2 text-xs text-ink/40">
-          {file.name} · {fmtSize(file.size)} · will compress before upload
+          {picked.length} photo{picked.length > 1 ? "s" : ""} ·{" "}
+          {fmtSize(totalSize)} · will compress before upload
+          {dest === "fit" && picked.length > 1 && (
+            <span className="text-accent">
+              {" "}
+              · fits take one photo — only the first will post
+            </span>
+          )}
+          {totalSize > SIZE_WARN && (
+            <span className="text-accent">
+              {" "}
+              · big upload — if it fails, try fewer photos
+            </span>
+          )}
         </p>
       )}
 

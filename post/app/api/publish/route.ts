@@ -31,7 +31,9 @@ function todayString() {
 export async function POST(req: NextRequest) {
   try {
     const form = await req.formData();
-    const file = form.get("file");
+    const files = form
+      .getAll("files")
+      .filter((f): f is File => f instanceof File && f.size > 0);
     const destination = String(form.get("destination") ?? "");
     const title = String(form.get("title") ?? "").trim();
     const caption = String(form.get("caption") ?? "").trim();
@@ -56,30 +58,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Link URL required" }, { status: 400 });
     }
 
-    const hasFile = file instanceof File && file.size > 0;
     // Photo optional for music (embed-first) and TIL link items (no image field)
-    if (!hasFile && destination !== "musicProject" && !isTilLink) {
+    if (files.length === 0 && destination !== "musicProject" && !isTilLink) {
       return NextResponse.json({ error: "No file" }, { status: 400 });
     }
-    if (hasFile && !file.type.startsWith("image/")) {
+    if (files.some((f) => !f.type.startsWith("image/"))) {
       return NextResponse.json(
         { error: "These sections only take images" },
         { status: 400 }
       );
     }
 
-    // 1. Asset pipeline first (when there's a photo). Link items skip it.
-    let image: Record<string, unknown> | null = null;
-    if (hasFile && !isTilLink) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const asset = await client.assets.upload("image", buffer, {
-        filename: file.name,
-        contentType: file.type,
-      });
-      image = {
-        _type: "image",
-        asset: { _type: "reference", _ref: asset._id },
-      };
+    // 1. Asset pipeline first (when there are photos). Link items skip it.
+    let images: Record<string, unknown>[] = [];
+    if (files.length > 0 && !isTilLink) {
+      images = [];
+      for (const f of files) {
+        const buffer = Buffer.from(await f.arrayBuffer());
+        const asset = await client.assets.upload("image", buffer, {
+          filename: f.name,
+          contentType: f.type,
+        });
+        images.push({
+          _type: "image",
+          asset: { _type: "reference", _ref: asset._id },
+        });
+      }
     }
 
     // 2. Then a document shaped exactly like the existing schema expects.
@@ -94,17 +98,22 @@ export async function POST(req: NextRequest) {
           embedUrl: embedUrl || undefined,
           projectUrl: projectUrl || undefined,
           desc: caption || undefined,
-          photos: image
-            ? [{ _type: "object", _key: crypto.randomUUID(), image }]
+          photos: images.length
+            ? images.map((image) => ({
+                _type: "object",
+                _key: crypto.randomUUID(),
+                image,
+              }))
             : undefined,
         };
         break;
       case "fit":
+        // fit is a single-photo type — first image wins
         doc = {
           _type: "fit",
           date: title || todayString(),
           desc: caption || undefined,
-          photo: image,
+          photo: images[0],
         };
         break;
       case "designProject":
@@ -112,24 +121,32 @@ export async function POST(req: NextRequest) {
           _type: "designProject",
           name: title,
           type: caption || undefined,
-          images: [{ ...image, _key: crypto.randomUUID() }],
+          images: images.map((image) => ({
+            ...image,
+            _key: crypto.randomUUID(),
+          })),
         };
         break;
       case "thingsILike":
       default:
         doc = {
           _type: "thingsILike",
-          media: [
-            isTilLink
-              ? {
+          media: isTilLink
+            ? [
+                {
                   _type: "object",
                   _key: crypto.randomUUID(),
                   type: tilType,
                   linkUrl,
                   linkTitle: linkTitle || undefined,
-                }
-              : { _type: "object", _key: crypto.randomUUID(), type: "photo", image },
-          ],
+                },
+              ]
+            : images.map((image) => ({
+                _type: "object",
+                _key: crypto.randomUUID(),
+                type: "photo",
+                image,
+              })),
           caption: caption || undefined,
           category: category || undefined,
         };
