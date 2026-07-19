@@ -40,14 +40,25 @@ export async function POST(req: NextRequest) {
     const color = String(form.get("color") ?? "").trim();
     const embedUrl = String(form.get("embedUrl") ?? "").trim();
     const projectUrl = String(form.get("projectUrl") ?? "").trim();
+    const tilType = String(form.get("tilType") ?? "photo").trim();
+    const linkUrl = String(form.get("linkUrl") ?? "").trim();
+    const linkTitle = String(form.get("linkTitle") ?? "").trim();
+    const orderRaw = String(form.get("order") ?? "").trim();
+    const order = orderRaw && !isNaN(Number(orderRaw)) ? Number(orderRaw) : undefined;
 
     if (!DESTINATIONS.has(destination)) {
       return NextResponse.json({ error: "Pick a destination" }, { status: 400 });
     }
 
+    const isTilLink =
+      destination === "thingsILike" && (tilType === "music" || tilType === "video");
+    if (isTilLink && !linkUrl) {
+      return NextResponse.json({ error: "Link URL required" }, { status: 400 });
+    }
+
     const hasFile = file instanceof File && file.size > 0;
-    // Photo is optional for music projects (they're embed-first), required elsewhere
-    if (!hasFile && destination !== "musicProject") {
+    // Photo optional for music (embed-first) and TIL link items (no image field)
+    if (!hasFile && destination !== "musicProject" && !isTilLink) {
       return NextResponse.json({ error: "No file" }, { status: 400 });
     }
     if (hasFile && !file.type.startsWith("image/")) {
@@ -57,9 +68,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Asset pipeline first (when there's a photo).
+    // 1. Asset pipeline first (when there's a photo). Link items skip it.
     let image: Record<string, unknown> | null = null;
-    if (hasFile) {
+    if (hasFile && !isTilLink) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const asset = await client.assets.upload("image", buffer, {
         filename: file.name,
@@ -109,13 +120,23 @@ export async function POST(req: NextRequest) {
         doc = {
           _type: "thingsILike",
           media: [
-            { _type: "object", _key: crypto.randomUUID(), type: "photo", image },
+            isTilLink
+              ? {
+                  _type: "object",
+                  _key: crypto.randomUUID(),
+                  type: tilType,
+                  linkUrl,
+                  linkTitle: linkTitle || undefined,
+                }
+              : { _type: "object", _key: crypto.randomUUID(), type: "photo", image },
           ],
           caption: caption || undefined,
           category: category || undefined,
         };
         break;
     }
+
+    if (order !== undefined) doc.order = order;
 
     const created = await client.create(doc as { _type: string });
     return NextResponse.json({ ok: true, id: created._id });

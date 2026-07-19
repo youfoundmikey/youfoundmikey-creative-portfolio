@@ -30,6 +30,12 @@ export default function Composer() {
   const [color, setColor] = useState("");
   const [embedUrl, setEmbedUrl] = useState("");
   const [projectUrl, setProjectUrl] = useState("");
+  // things-i-like media kind — photo upload or music/video link
+  const [tilKind, setTilKind] = useState<"photo" | "music" | "video">("photo");
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkTitle, setLinkTitle] = useState("");
+  // every section has an optional order number
+  const [order, setOrder] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [progress, setProgress] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
@@ -53,6 +59,10 @@ export default function Composer() {
         if (typeof d.color === "string") setColor(d.color);
         if (typeof d.embedUrl === "string") setEmbedUrl(d.embedUrl);
         if (typeof d.projectUrl === "string") setProjectUrl(d.projectUrl);
+        if (["photo", "music", "video"].includes(d.tilKind)) setTilKind(d.tilKind);
+        if (typeof d.linkUrl === "string") setLinkUrl(d.linkUrl);
+        if (typeof d.linkTitle === "string") setLinkTitle(d.linkTitle);
+        if (typeof d.order === "string") setOrder(d.order);
       }
     } catch {
       /* corrupt draft — start clean */
@@ -72,12 +82,16 @@ export default function Composer() {
           color,
           embedUrl,
           projectUrl,
+          tilKind,
+          linkUrl,
+          linkTitle,
+          order,
         })
       );
     } catch {
       /* storage full or private mode — nothing to do */
     }
-  }, [title, caption, dest, category, emoji, color, embedUrl, projectUrl]);
+  }, [title, caption, dest, category, emoji, color, embedUrl, projectUrl, tilKind, linkUrl, linkTitle, order]);
 
   // keep the caption textarea's height honest after restoring a draft
   useEffect(() => {
@@ -101,8 +115,9 @@ export default function Composer() {
     [previewUrl]
   );
 
-  // Music is about the embed — photo optional there, required everywhere else
-  const photoRequired = dest !== "musicProject";
+  // Photo optional for music (embed-first) and for TIL link items (no image field)
+  const isTilLink = dest === "thingsILike" && tilKind !== "photo";
+  const photoRequired = dest !== "musicProject" && !isTilLink;
 
   // ---- publish
   async function publish() {
@@ -112,7 +127,7 @@ export default function Composer() {
 
     setErrorMsg("");
     let upload: File | null = null;
-    if (file) {
+    if (file && !isTilLink) {
       setStatus("compressing");
       upload = await compressIfImage(file);
     }
@@ -130,6 +145,10 @@ export default function Composer() {
     form.append("color", color.trim());
     form.append("embedUrl", embedUrl.trim());
     form.append("projectUrl", projectUrl.trim());
+    form.append("tilType", tilKind);
+    form.append("linkUrl", linkUrl.trim());
+    form.append("linkTitle", linkTitle.trim());
+    form.append("order", order.trim());
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/publish");
@@ -155,6 +174,10 @@ export default function Composer() {
         setColor("");
         setEmbedUrl("");
         setProjectUrl("");
+        setTilKind("photo");
+        setLinkUrl("");
+        setLinkTitle("");
+        setOrder("");
         setProgress(0);
         setStatus("idle");
         try {
@@ -183,6 +206,7 @@ export default function Composer() {
     !!destination &&
     (!photoRequired || !!file) &&
     (!destination.titleRequired || !!title.trim()) &&
+    (!isTilLink || !!linkUrl.trim()) &&
     status !== "uploading";
 
   return (
@@ -222,7 +246,11 @@ export default function Composer() {
               tap
             </span>
             <span className="mt-1 text-sm text-ink/40">
-              {dest === "musicProject" ? "add a photo (optional)" : "add a photo"}
+              {isTilLink
+                ? "links don't need a photo"
+                : dest === "musicProject"
+                  ? "add a photo (optional)"
+                  : "add a photo"}
             </span>
           </>
         )}
@@ -260,6 +288,58 @@ export default function Composer() {
           );
         })}
       </div>
+
+      {/* ---- TIL media kind: photo upload or music/video link ---- */}
+      {dest === "thingsILike" && (
+        <div
+          className="flex gap-2 overflow-x-auto px-6 pb-3"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {(
+            [
+              ["photo", "📷 photo"],
+              ["music", "🎵 music link"],
+              ["video", "🎬 video link"],
+            ] as const
+          ).map(([kind, label]) => (
+            <button
+              key={kind}
+              type="button"
+              onClick={() => setTilKind(kind)}
+              className={`min-h-tap shrink-0 rounded-full px-4 text-sm transition-colors ${
+                tilKind === kind
+                  ? "bg-accent text-paper"
+                  : "bg-transparent text-ink/50 shadow-[inset_0_0_0_1.5px_rgba(22,21,18,0.15)]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ---- TIL link fields ---- */}
+      {isTilLink && (
+        <div className="flex flex-col gap-1 px-6 pb-3">
+          <input
+            type="url"
+            inputMode="url"
+            autoCapitalize="off"
+            autoCorrect="off"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder={tilKind === "music" ? "Music link URL" : "Video link URL"}
+            className="min-h-tap w-full border-b-2 border-ink/15 bg-transparent py-3 outline-none placeholder:text-ink/30 focus:border-accent"
+          />
+          <input
+            type="text"
+            value={linkTitle}
+            onChange={(e) => setLinkTitle(e.target.value)}
+            placeholder="Link title"
+            className="min-h-tap w-full border-b-2 border-ink/15 bg-transparent py-3 outline-none placeholder:text-ink/30 focus:border-accent"
+          />
+        </div>
+      )}
 
       {/* ---- category: only for things i like, same list as the site ---- */}
       {dest === "thingsILike" && (
@@ -365,6 +445,16 @@ export default function Composer() {
           rows={1}
           className="min-h-tap w-full overflow-hidden border-b-2 border-ink/15 bg-transparent py-3 outline-none placeholder:text-ink/30 focus:border-accent"
         />
+        {destination && (
+          <input
+            type="text"
+            inputMode="decimal"
+            value={order}
+            onChange={(e) => setOrder(e.target.value.replace(/[^0-9.]/g, ""))}
+            placeholder="Order (optional)"
+            className="min-h-tap w-36 border-b-2 border-ink/15 bg-transparent py-3 outline-none placeholder:text-ink/30 focus:border-accent"
+          />
+        )}
       </div>
 
       {errorMsg && (
