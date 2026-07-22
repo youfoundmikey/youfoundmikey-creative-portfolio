@@ -2519,3 +2519,77 @@ body { height: 100dvh; }
   color: #fff;
   transform: translate(2px, -2px);
 }
+
+/* ════════════════════════════════════════════════════════════
+   BACK BUTTON + UNIFORM TIL CARDS
+   ════════════════════════════════════════════════════════════ */
+
+.modal-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 22px;
+  line-height: 1;
+  padding: 0 6px;
+  margin-left: 6px;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.modal-back:hover { color: #fff; }
+
+/* every TIL box the same size */
+.til-grid {
+  align-items: stretch;
+  grid-auto-rows: 480px;
+}
+
+.til-polaroid {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* media zone: fixed height no matter how many images */
+.til-polaroid > .til-polaroid-media,
+.til-polaroid > .til-yt-thumb {
+  height: 240px;
+  aspect-ratio: auto;
+  flex-shrink: 0;
+}
+
+.til-multi-media {
+  height: 240px;
+  flex-shrink: 0;
+  grid-auto-rows: 1fr;
+  overflow: hidden;
+}
+
+.til-multi-media .til-polaroid-media,
+.til-multi-media .til-yt-thumb {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.til-links { flex-shrink: 0; }
+
+/* caption takes the remaining space and scrolls if it's long */
+.til-polaroid-caption {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.til-polaroid-cat {
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .til-grid { grid-auto-rows: 430px; }
+  .til-polaroid > .til-polaroid-media,
+  .til-polaroid > .til-yt-thumb,
+  .til-multi-media { height: 200px; }
+}

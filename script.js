@@ -67,6 +67,7 @@ async function openMusicFolder() {
         <div class="modal-btn close js-close"></div>
         <div class="modal-btn min"></div>
         <div class="modal-btn max"></div>
+        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Music</span>
       </div>
       <div class="modal-body music-body">
@@ -91,8 +92,8 @@ async function openMusicFolder() {
   overlay.querySelectorAll('.music-list-item').forEach(card => {
     card.addEventListener('click', () => {
       const p = musicProjects[card.dataset.projectIndex];
-      overlay.remove();
-      setTimeout(() => openProjectDetail(p), 160);
+      // detail opens on top of the list — back returns to the list
+      openProjectDetail(p);
     });
   });
 }
@@ -123,6 +124,7 @@ function openProjectDetail(p) {
           <div class="modal-btn close js-close"></div>
           <div class="modal-btn min"></div>
           <div class="modal-btn max"></div>
+          <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         </div>
         <div class="pd-hero-text">
           <h1 class="pd-hero-title">${p.title.replace(/\p{Emoji}/gu, '').trim()}</h1>
@@ -172,6 +174,7 @@ async function openFitsFolder() {
         <div class="modal-btn close js-close"></div>
         <div class="modal-btn min"></div>
         <div class="modal-btn max"></div>
+        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Fits</span>
       </div>
       <div class="fits-body">
@@ -205,7 +208,14 @@ function openLightbox(src) {
   lb.className = 'lightbox-overlay';
   lb.innerHTML = `<img class="lightbox-img" src="${src}" alt=""/>`;
   document.body.appendChild(lb);
-  lb.addEventListener('click', () => lb.remove());
+  history.pushState({ modal: true }, '');
+  const close = () => {
+    lb.remove();
+    const i = modalStack.findIndex(m => m.el === lb);
+    if (i >= 0) modalStack.splice(i, 1);
+  };
+  modalStack.push({ el: lb, close });
+  lb.addEventListener('click', () => history.back());
 }
 
 async function openDesignFolder() {
@@ -222,6 +232,7 @@ async function openDesignFolder() {
         <div class="modal-btn close js-close"></div>
         <div class="modal-btn min"></div>
         <div class="modal-btn max"></div>
+        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Design</span>
       </div>
       <div class="design-body">
@@ -332,6 +343,7 @@ async function openThingsFolder() {
         <div class="modal-btn close js-close"></div>
         <div class="modal-btn min"></div>
         <div class="modal-btn max"></div>
+        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Things I Like</span>
       </div>
       <div class="til-inner">
@@ -360,17 +372,47 @@ async function openThingsFolder() {
   });
 }
 
+// ── History-aware modal stack: back button/gesture closes the top window ──
+const modalStack = [];
+
+function popTopModal() {
+  while (modalStack.length) {
+    const top = modalStack.pop();
+    if (document.body.contains(top.el)) { top.close(); return; }
+  }
+}
+
+window.addEventListener('popstate', popTopModal);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modalStack.length) history.back();
+});
+
 function mountModal(overlay, folderKey) {
   document.body.appendChild(overlay);
-  if (folderKey) location.hash = folderKey;
+
+  // every open window gets its own history entry, so "back" peels it off
+  if (folderKey) {
+    if (location.hash === '#' + folderKey) history.pushState({ modal: true }, '');
+    else location.hash = folderKey;
+  } else {
+    history.pushState({ modal: true }, '');
+  }
+
   const close = () => {
     overlay.style.opacity = '0';
     overlay.style.transition = 'opacity 0.15s';
     setTimeout(() => { overlay.remove(); }, 150);
     if (folderKey) history.replaceState(null, '', ' ');
+    const i = modalStack.findIndex(m => m.el === overlay);
+    if (i >= 0) modalStack.splice(i, 1);
   };
-  overlay.querySelector('.js-close').addEventListener('click', close);
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  modalStack.push({ el: overlay, close });
+
+  const requestClose = () => history.back();
+  overlay.querySelector('.js-close').addEventListener('click', requestClose);
+  overlay.querySelectorAll('.js-back').forEach(b => b.addEventListener('click', requestClose));
+  overlay.addEventListener('click', e => { if (e.target === overlay) requestClose(); });
 }
 
 const isMobile = () => window.innerWidth <= 768;
