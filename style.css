@@ -1605,8 +1605,18 @@ body {
   border: 1px solid rgba(255,255,255,0.06);
 }
 .design-preview { font-size: 32px; border-radius: 12px; }
+/* the info strip stayed white from the light-theme days — white text on
+   white bg made the notes invisible */
+.design-info { background: #1C1C1C; }
 .design-name { color: rgba(255,255,255,0.9); font-weight: 600; font-size: 14px; }
-.design-type { color: rgba(255,255,255,0.4); font-size: 12px; }
+.design-type {
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  text-transform: none;   /* long notes in all-caps read like yelling */
+  letter-spacing: 0;
+  line-height: 1.6;
+  white-space: pre-line;  /* keep paragraph breaks here too */
+}
 
 /* ── Things I Like ── */
 .til-window .modal-titlebar { background: #1C1C1C; }
