@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DESTINATIONS,
@@ -231,11 +232,14 @@ export default function Composer() {
 
   return (
     <main className="flex min-h-[100svh] flex-col pt-[env(safe-area-inset-top)]">
-      {/* wordmark — the only thing that lives up top */}
-      <header className="px-6 pb-2 pt-4">
+      {/* wordmark + the one link out */}
+      <header className="flex items-baseline justify-between px-6 pb-2 pt-4">
         <h1 className="font-heading text-3xl leading-none">
           Post<span className="text-accent">.</span>
         </h1>
+        <Link href="/uploads" className="min-h-tap py-2 text-sm text-ink/50">
+          uploads →
+        </Link>
       </header>
 
       {/* ---- media area ---- */}
