@@ -2444,3 +2444,78 @@ body {
 
 /* folders own their stacking context so ground shadows stay with them */
 .folder { z-index: 2; }
+
+/* ════════════════════════════════════════════════════════════
+   FULLSCREEN PWA — respect the dynamic island / safe areas
+   ════════════════════════════════════════════════════════════ */
+
+body { height: 100dvh; }
+.desktop { height: 100dvh; }
+
+.menubar {
+  padding-top: env(safe-area-inset-top);
+  height: calc(42px + env(safe-area-inset-top));
+}
+
+.poster-type {
+  inset: calc(42px + env(safe-area-inset-top)) 0 0 0;
+}
+
+.ticker {
+  padding-bottom: calc(11px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 768px) {
+  .menubar { height: calc(38px + env(safe-area-inset-top)); }
+  .poster-type { inset: calc(38px + env(safe-area-inset-top)) 0 0 0; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIL — music links get their own row under the media
+   ════════════════════════════════════════════════════════════ */
+
+.til-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.til-music-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.til-music-link:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.til-music-link-title {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.til-music-link-arrow {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  transition: transform 0.15s, color 0.15s;
+}
+
+.til-music-link:hover .til-music-link-arrow {
+  color: #fff;
+  transform: translate(2px, -2px);
+}

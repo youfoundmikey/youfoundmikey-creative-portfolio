@@ -283,17 +283,33 @@ async function openThingsFolder() {
     const caption = item.caption || '';
     const cat = item.category || '';
     const mediaItems = item.media && item.media.length ? item.media : [];
-    const multiMedia = mediaItems.length > 1;
+
+    // Music links live in their own row below the media, not in the grid
+    const visual = mediaItems.filter(m => m.type !== 'music');
+    const musicLinks = mediaItems.filter(m => m.type === 'music');
+    const multiMedia = visual.length > 1;
 
     const mediaHTML = multiMedia
-      ? `<div class="til-multi-media">${mediaItems.map(renderMediaItem).join('')}</div>`
-      : mediaItems.length === 1
-        ? renderMediaItem(mediaItems[0])
-        : `<div class="til-polaroid-media"><div class="til-polaroid-placeholder">📷</div></div>`;
+      ? `<div class="til-multi-media">${visual.map(renderMediaItem).join('')}</div>`
+      : visual.length === 1
+        ? renderMediaItem(visual[0])
+        : musicLinks.length
+          ? ''
+          : `<div class="til-polaroid-media"><div class="til-polaroid-placeholder">📷</div></div>`;
+
+    const linksHTML = musicLinks.length
+      ? `<div class="til-links">${musicLinks.map(m => `
+          <a href="${m.linkUrl}" target="_blank" class="til-music-link">
+            <span>🎵</span>
+            <span class="til-music-link-title">${m.linkTitle || m.linkUrl}</span>
+            <span class="til-music-link-arrow">↗</span>
+          </a>`).join('')}</div>`
+      : '';
 
     return `
       <div class="til-polaroid${multiMedia ? ' til-multi' : ''}">
         ${mediaHTML}
+        ${linksHTML}
         ${caption ? `<p class="til-polaroid-caption">${caption}</p>` : ''}
         ${cat ? `<span class="til-polaroid-cat">${cat}</span>` : ''}
       </div>`;
