@@ -238,7 +238,7 @@ async function openDesignFolder() {
             <div class="design-card">
               <div class="design-preview" style="background:${p.color || '#FFE7AB'};">
                 ${p.images?.[0]?.asset?._ref
-                  ? `<img src="${imageUrl(p.images[0].asset._ref)}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" alt=""/>`
+                  ? `<img class="design-img" src="${imageUrl(p.images[0].asset._ref)}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" alt=""/>`
                   : (p.emoji || '🎨')}
               </div>
               <div class="design-info">
@@ -252,6 +252,12 @@ async function openDesignFolder() {
     </div>
   `;
   mountModal(overlay, 'design');
+
+  // tap a design image to expand it — same lightbox as the fits archive
+  overlay.querySelectorAll('.design-img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => openLightbox(img.src));
+  });
 }
 
 async function openThingsFolder() {
