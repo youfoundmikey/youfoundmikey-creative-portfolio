@@ -14,7 +14,7 @@ const QUERY = `*[_type in ["musicProject","fit","designProject","thingsILike"]]
   order,
   // musicProject
   title, desc, emoji, color, embedUrl, projectUrl,
-  "photos": photos[]{ _key, "url": image.asset->url },
+  "photos": photos[]{ _key, caption, "url": image.asset->url },
   // fit
   date,
   "photoUrl": photo.asset->url,

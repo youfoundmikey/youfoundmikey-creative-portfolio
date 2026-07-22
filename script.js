@@ -65,9 +65,8 @@ async function openMusicFolder() {
     <div class="modal-window modal-large">
       <div class="modal-titlebar">
         <div class="modal-btn close js-close"></div>
-        <div class="modal-btn min"></div>
+        <button class="modal-btn min js-back" aria-label="Back">&#8249;</button>
         <div class="modal-btn max"></div>
-        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Music</span>
       </div>
       <div class="modal-body music-body">
@@ -122,9 +121,8 @@ function openProjectDetail(p) {
       <div class="pd-hero" style="background:${p.color};">
         <div class="pd-hero-lights">
           <div class="modal-btn close js-close"></div>
-          <div class="modal-btn min"></div>
+          <button class="modal-btn min js-back" aria-label="Back">&#8249;</button>
           <div class="modal-btn max"></div>
-          <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         </div>
         <div class="pd-hero-text">
           <h1 class="pd-hero-title">${p.title.replace(/\p{Emoji}/gu, '').trim()}</h1>
@@ -172,9 +170,8 @@ async function openFitsFolder() {
     <div class="modal-window modal-large">
       <div class="modal-titlebar">
         <div class="modal-btn close js-close"></div>
-        <div class="modal-btn min"></div>
+        <button class="modal-btn min js-back" aria-label="Back">&#8249;</button>
         <div class="modal-btn max"></div>
-        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Fits</span>
       </div>
       <div class="fits-body">
@@ -230,9 +227,8 @@ async function openDesignFolder() {
     <div class="modal-window modal-large">
       <div class="modal-titlebar">
         <div class="modal-btn close js-close"></div>
-        <div class="modal-btn min"></div>
+        <button class="modal-btn min js-back" aria-label="Back">&#8249;</button>
         <div class="modal-btn max"></div>
-        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Design</span>
       </div>
       <div class="design-body">
@@ -341,9 +337,8 @@ async function openThingsFolder() {
     <div class="modal-window til-window">
       <div class="modal-titlebar">
         <div class="modal-btn close js-close"></div>
-        <div class="modal-btn min"></div>
+        <button class="modal-btn min js-back" aria-label="Back">&#8249;</button>
         <div class="modal-btn max"></div>
-        <button class="modal-back js-back" aria-label="Back">&#8249;</button>
         <span class="modal-title">Things I Like</span>
       </div>
       <div class="til-inner">

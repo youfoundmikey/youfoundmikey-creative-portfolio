@@ -48,6 +48,15 @@ export async function POST(req: NextRequest) {
     const orderRaw = String(form.get("order") ?? "").trim();
     const order = orderRaw && !isNaN(Number(orderRaw)) ? Number(orderRaw) : undefined;
 
+    // per-photo captions, aligned with the files order (music only)
+    let captions: string[] = [];
+    try {
+      const parsed = JSON.parse(String(form.get("captions") ?? "[]"));
+      if (Array.isArray(parsed)) captions = parsed.map((c) => String(c ?? ""));
+    } catch {
+      /* no captions — fine */
+    }
+
     if (!DESTINATIONS.has(destination)) {
       return NextResponse.json({ error: "Pick a destination" }, { status: 400 });
     }
@@ -99,10 +108,11 @@ export async function POST(req: NextRequest) {
           projectUrl: projectUrl || undefined,
           desc: caption || undefined,
           photos: images.length
-            ? images.map((image) => ({
+            ? images.map((image, i) => ({
                 _type: "object",
                 _key: crypto.randomUUID(),
                 image,
+                caption: captions[i]?.trim() || undefined,
               }))
             : undefined,
         };

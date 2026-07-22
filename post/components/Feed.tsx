@@ -9,6 +9,7 @@ import { haptic } from "@/lib/haptics";
 interface PhotoRef {
   _key: string;
   url?: string;
+  caption?: string;
 }
 
 interface MediaItem {
@@ -48,6 +49,7 @@ interface FeedItem {
 interface NewPhoto {
   file: File;
   url: string;
+  caption: string;
 }
 
 interface EditState {
@@ -62,6 +64,7 @@ interface EditState {
   removeKeys: string[];
   removePhoto: boolean;
   linkEdits: Record<string, { linkUrl: string; linkTitle: string }>;
+  photoCaptions: Record<string, string>; // music: per-photo captions by _key
   newPhotos: NewPhoto[];
 }
 
@@ -139,6 +142,10 @@ function freshEdit(item: FeedItem): EditState {
         linkTitle: m.linkTitle ?? "",
       };
     });
+  const photoCaptions: EditState["photoCaptions"] = {};
+  (item.photos ?? []).forEach((p) => {
+    photoCaptions[p._key] = p.caption ?? "";
+  });
   return {
     title:
       item._type === "fit"
@@ -161,6 +168,7 @@ function freshEdit(item: FeedItem): EditState {
     removeKeys: [],
     removePhoto: false,
     linkEdits,
+    photoCaptions,
     newPhotos: [],
   };
 }
@@ -210,7 +218,7 @@ export default function Feed() {
     if (!list) return;
     const additions = Array.from(list)
       .filter((f) => f.type.startsWith("image/"))
-      .map((file) => ({ file, url: URL.createObjectURL(file) }));
+      .map((file) => ({ file, url: URL.createObjectURL(file), caption: "" }));
     if (additions.length === 0) return;
     setEdit((e) => (e ? { ...e, newPhotos: [...e.newPhotos, ...additions] } : e));
   };
@@ -243,6 +251,19 @@ export default function Feed() {
         JSON.stringify(
           Object.entries(edit.linkEdits).map(([_key, v]) => ({ _key, ...v }))
         )
+      );
+      form.append(
+        "captionEdits",
+        JSON.stringify(
+          Object.entries(edit.photoCaptions).map(([_key, caption]) => ({
+            _key,
+            caption,
+          }))
+        )
+      );
+      form.append(
+        "newCaptions",
+        JSON.stringify(edit.newPhotos.map((p) => p.caption.trim()))
       );
       uploads.forEach((f) => form.append("files", f, f.name));
 
@@ -409,63 +430,102 @@ export default function Feed() {
                           edit.removeKeys.includes(p._key) ||
                           (p._key === "__single__" && edit.removePhoto);
                         return (
-                          <button
-                            key={p._key}
-                            type="button"
-                            onClick={() => {
-                              if (p._key === "__single__") {
-                                patchEdit({ removePhoto: !edit.removePhoto });
-                              } else {
-                                patchEdit({
-                                  removeKeys: removed
-                                    ? edit.removeKeys.filter((k) => k !== p._key)
-                                    : [...edit.removeKeys, p._key],
-                                });
-                              }
-                            }}
-                            className="relative aspect-square"
-                            aria-label={removed ? "Keep photo" : "Remove photo"}
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={thumb(p.url)}
-                              alt=""
-                              className={`h-full w-full object-cover ${
-                                removed ? "opacity-25" : ""
-                              }`}
-                            />
-                            <span className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-ink/70 text-sm text-paper">
-                              {removed ? "↩" : "×"}
-                            </span>
-                          </button>
+                          <div key={p._key} className="flex flex-col">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (p._key === "__single__") {
+                                  patchEdit({ removePhoto: !edit.removePhoto });
+                                } else {
+                                  patchEdit({
+                                    removeKeys: removed
+                                      ? edit.removeKeys.filter(
+                                          (k) => k !== p._key
+                                        )
+                                      : [...edit.removeKeys, p._key],
+                                  });
+                                }
+                              }}
+                              className="relative aspect-square"
+                              aria-label={removed ? "Keep photo" : "Remove photo"}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={thumb(p.url)}
+                                alt=""
+                                className={`h-full w-full object-cover ${
+                                  removed ? "opacity-25" : ""
+                                }`}
+                              />
+                              <span className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-ink/70 text-sm text-paper">
+                                {removed ? "↩" : "×"}
+                              </span>
+                            </button>
+                            {item._type === "musicProject" && !removed && (
+                              <input
+                                type="text"
+                                value={edit.photoCaptions[p._key] ?? ""}
+                                onChange={(e) =>
+                                  patchEdit({
+                                    photoCaptions: {
+                                      ...edit.photoCaptions,
+                                      [p._key]: e.target.value,
+                                    },
+                                  })
+                                }
+                                placeholder="add caption"
+                                className="w-full border-b border-ink/10 bg-transparent py-1 text-xs outline-none placeholder:text-ink/25 focus:border-accent"
+                              />
+                            )}
+                          </div>
                         );
                       })}
                       {edit.newPhotos.map((p, i) => (
-                        <button
-                          key={p.url}
-                          type="button"
-                          onClick={() => {
-                            URL.revokeObjectURL(p.url);
-                            patchEdit({
-                              newPhotos: edit.newPhotos.filter((_, j) => j !== i),
-                            });
-                          }}
-                          className="relative aspect-square"
-                          aria-label="Remove new photo"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={p.url}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                          <span className="absolute bottom-1 left-1 bg-accent px-1 text-[10px] text-paper">
-                            new
-                          </span>
-                          <span className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-ink/70 text-sm text-paper">
-                            ×
-                          </span>
-                        </button>
+                        <div key={p.url} className="flex flex-col">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              URL.revokeObjectURL(p.url);
+                              patchEdit({
+                                newPhotos: edit.newPhotos.filter(
+                                  (_, j) => j !== i
+                                ),
+                              });
+                            }}
+                            className="relative aspect-square"
+                            aria-label="Remove new photo"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={p.url}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                            <span className="absolute bottom-1 left-1 bg-accent px-1 text-[10px] text-paper">
+                              new
+                            </span>
+                            <span className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-ink/70 text-sm text-paper">
+                              ×
+                            </span>
+                          </button>
+                          {item._type === "musicProject" && (
+                            <input
+                              type="text"
+                              value={p.caption}
+                              onChange={(e) =>
+                                patchEdit({
+                                  newPhotos: edit.newPhotos.map((np, j) =>
+                                    j === i
+                                      ? { ...np, caption: e.target.value }
+                                      : np
+                                  ),
+                                })
+                              }
+                              placeholder="add caption"
+                              className="w-full border-b border-ink/10 bg-transparent py-1 text-xs outline-none placeholder:text-ink/25 focus:border-accent"
+                            />
+                          )}
+                        </div>
                       ))}
                       {/* add — fit takes one photo, so adding replaces */}
                       {(item._type !== "fit" || edit.newPhotos.length === 0) && (

@@ -18,6 +18,7 @@ type Status = "idle" | "compressing" | "uploading" | "error";
 interface Picked {
   file: File;
   url: string;
+  caption: string; // per-photo caption — only music projects use it
 }
 
 function fmtSize(bytes: number) {
@@ -113,11 +114,17 @@ export default function Composer() {
     if (!list || list.length === 0) return;
     const additions = Array.from(list)
       .filter((f) => f.type.startsWith("image/"))
-      .map((file) => ({ file, url: URL.createObjectURL(file) }));
+      .map((file) => ({ file, url: URL.createObjectURL(file), caption: "" }));
     if (additions.length === 0) return;
     setPicked((prev) => [...prev, ...additions]);
     setStatus("idle");
     setErrorMsg("");
+  }, []);
+
+  const setPickedCaption = useCallback((index: number, caption: string) => {
+    setPicked((prev) =>
+      prev.map((p, i) => (i === index ? { ...p, caption } : p))
+    );
   }, []);
 
   const removeFile = useCallback((index: number) => {
@@ -168,6 +175,10 @@ export default function Composer() {
     form.append("color", color.trim());
     form.append("embedUrl", embedUrl.trim());
     form.append("projectUrl", projectUrl.trim());
+    form.append(
+      "captions",
+      JSON.stringify(picked.map((p) => p.caption.trim()))
+    );
     form.append("tilType", tilKind);
     form.append("linkUrl", linkUrl.trim());
     form.append("linkTitle", linkTitle.trim());
@@ -276,21 +287,33 @@ export default function Composer() {
       ) : (
         <div className="mx-6 mt-2 grid max-h-[38svh] grid-cols-3 gap-1.5 overflow-y-auto">
           {picked.map((p, i) => (
-            <div key={p.url} className="relative aspect-square">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.url}
-                alt={`Photo ${i + 1}`}
-                className="h-full w-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => removeFile(i)}
-                className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-paper"
-                aria-label={`Remove photo ${i + 1}`}
-              >
-                ×
-              </button>
+            <div key={p.url} className="flex flex-col">
+              <div className="relative aspect-square">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.url}
+                  alt={`Photo ${i + 1}`}
+                  className="h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeFile(i)}
+                  className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-paper"
+                  aria-label={`Remove photo ${i + 1}`}
+                >
+                  ×
+                </button>
+              </div>
+              {/* music photos get their own caption on the site */}
+              {dest === "musicProject" && (
+                <input
+                  type="text"
+                  value={p.caption}
+                  onChange={(e) => setPickedCaption(i, e.target.value)}
+                  placeholder="add caption"
+                  className="w-full border-b border-ink/10 bg-transparent py-1.5 text-xs outline-none placeholder:text-ink/25 focus:border-accent"
+                />
+              )}
             </div>
           ))}
           {dest !== "fit" && (

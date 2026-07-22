@@ -38,9 +38,13 @@ export async function POST(req: NextRequest) {
 
     let removeKeys: Set<string>;
     let mediaEdits: { _key: string; linkUrl?: string; linkTitle?: string }[];
+    let captionEdits: { _key: string; caption?: string }[];
+    let newCaptions: string[];
     try {
       removeKeys = new Set(JSON.parse(String(form.get("removeKeys") ?? "[]")));
       mediaEdits = JSON.parse(String(form.get("mediaEdits") ?? "[]"));
+      captionEdits = JSON.parse(String(form.get("captionEdits") ?? "[]"));
+      newCaptions = JSON.parse(String(form.get("newCaptions") ?? "[]"));
     } catch {
       return NextResponse.json({ error: "Bad edit payload" }, { status: 400 });
     }
@@ -87,13 +91,19 @@ export async function POST(req: NextRequest) {
         opt("color", color);
         opt("embedUrl", embedUrl);
         opt("projectUrl", projectUrl);
-        const kept = ((doc.photos as PhotoItem[]) ?? []).filter(
-          (p) => !removeKeys.has(p._key)
-        );
-        const added = newImages.map((image) => ({
+        const capEdits = new Map(captionEdits.map((e) => [e._key, e.caption]));
+        const kept = ((doc.photos as PhotoItem[]) ?? [])
+          .filter((p) => !removeKeys.has(p._key))
+          .map((p) =>
+            capEdits.has(p._key)
+              ? { ...p, caption: (capEdits.get(p._key) ?? "").trim() || undefined }
+              : p
+          );
+        const added = newImages.map((image, i) => ({
           _type: "object",
           _key: crypto.randomUUID(),
           image,
+          caption: newCaptions[i]?.trim() || undefined,
         }));
         const photos = [...kept, ...added];
         if (photos.length) set.photos = photos;
