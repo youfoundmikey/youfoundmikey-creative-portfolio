@@ -100,6 +100,99 @@
 
   </div>
 
+  <!-- ── iPhone home screen — phones only, desktop never sees this ── -->
+  <div class="iphone-home">
+
+    <!-- status bar -->
+    <div class="ih-status">
+      <span class="ih-time" id="ih-clock">9:41</span>
+      <span class="ih-status-right">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="2.5" width="3" height="8.5" rx="0.8"/><rect x="13.5" y="0" width="3" height="11" rx="0.8"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 9.2a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8zM8 5.4c1.55 0 2.96.6 4 1.58l-1.42 1.43A3.98 3.98 0 0 0 8 7.4c-1 0-1.9.36-2.58 1L4 6.98A5.97 5.97 0 0 1 8 5.4zM8 1.5c2.63 0 5.02 1.03 6.79 2.7l-1.42 1.42A7.96 7.96 0 0 0 8 3.5c-2.08 0-3.97.8-5.37 2.12L1.21 4.2A9.95 9.95 0 0 1 8 1.5z" transform="translate(0,-1.5)"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.5" fill="currentColor"/><path d="M23 4v4c1-.3 1.5-1 1.5-2S24 4.3 23 4z" fill="currentColor" opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <!-- photo widget -->
+    <div class="ih-widget">
+      <img src="me.jpg" alt="" class="ih-widget-img"/>
+      <div class="ih-widget-scrim"></div>
+      <div class="ih-widget-text">
+        <span class="ih-widget-outline">YOUFOUND</span>
+        <span class="ih-widget-fill">MIKEY</span>
+      </div>
+    </div>
+
+    <!-- now playing — latest project, spotify-player style -->
+    <button class="ih-music" id="ih-music" aria-label="Latest music project">
+      <span class="ih-music-art" id="ih-music-art"></span>
+      <span class="ih-music-meta">
+        <span class="ih-music-eyebrow">Latest project</span>
+        <span class="ih-music-title" id="ih-music-title">&nbsp;</span>
+        <span class="ih-music-artist">youfoundmikey</span>
+      </span>
+      <span class="ih-music-play">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+    </button>
+
+    <!-- weather + world clock -->
+    <div class="ih-widget-row">
+      <div class="ih-wx">
+        <span class="ih-wx-city">New York</span>
+        <span class="ih-wx-icon" id="ih-wx-icon"></span>
+        <span class="ih-wx-temp" id="ih-wx-temp">--&deg;</span>
+        <span class="ih-wx-cond" id="ih-wx-cond">&nbsp;</span>
+        <span class="ih-wx-hilo" id="ih-wx-hilo">&nbsp;</span>
+      </div>
+      <div class="ih-clocks" id="ih-clocks"></div>
+    </div>
+
+    <!-- app grid — the four sections -->
+    <div class="ih-grid">
+      <button class="ih-app" data-folder="music" aria-label="Music">
+        <span class="ih-icon"><img src="icons/music.png" alt=""/></span>
+        <span class="ih-label">Music</span>
+      </button>
+
+      <button class="ih-app" data-folder="fits" aria-label="Fits">
+        <span class="ih-icon"><img src="icons/fits.png" alt=""/></span>
+        <span class="ih-label">Fits</span>
+      </button>
+
+      <button class="ih-app" data-folder="design" aria-label="Design">
+        <span class="ih-icon"><img src="icons/design.png" alt=""/></span>
+        <span class="ih-label">Design</span>
+      </button>
+
+      <button class="ih-app" data-folder="things" aria-label="Things I Like">
+        <span class="ih-icon"><img src="icons/things.png" alt=""/></span>
+        <span class="ih-label">Things I Like</span>
+      </button>
+    </div>
+
+    <div class="ih-spacer"></div>
+
+    <!-- page dots -->
+    <div class="ih-dots"><span class="ih-dot on"></span><span class="ih-dot"></span></div>
+
+    <!-- dock: contact + socials -->
+    <div class="ih-dock">
+      <a class="ih-dock-app" href="mailto:youfoundmikey@icloud.com" aria-label="Email me">
+        <span class="ih-icon"><img src="icons/mail.png" alt=""/></span>
+      </a>
+      <a class="ih-dock-app" href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <span class="ih-icon"><img src="icons/instagram.png" alt=""/></span>
+      </a>
+      <a class="ih-dock-app" href="https://youtube.com" target="_blank" aria-label="YouTube">
+        <span class="ih-icon"><img src="icons/youtube.png" alt=""/></span>
+      </a>
+      <a class="ih-dock-app" href="https://spotify.com" target="_blank" aria-label="Spotify">
+        <span class="ih-icon"><img src="icons/spotify.png" alt=""/></span>
+      </a>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
