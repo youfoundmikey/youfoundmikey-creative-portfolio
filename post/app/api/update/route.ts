@@ -81,6 +81,14 @@ export async function POST(req: NextRequest) {
     };
 
     switch (doc._type) {
+      case "homeNote": {
+        if (!caption) {
+          return NextResponse.json({ error: "Write something" }, { status: 400 });
+        }
+        opt("title", title);
+        set.body = caption;
+        break;
+      }
       case "musicProject": {
         if (!title) {
           return NextResponse.json({ error: "Title required" }, { status: 400 });

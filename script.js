@@ -583,8 +583,74 @@ function initIhClocks() {
   setInterval(tick, 10000);
 }
 
+async function initIhFits() {
+  const stage = document.getElementById('ih-fits-stage');
+  if (!stage) return;
+  const dateEl = document.getElementById('ih-fits-date');
+  let fits = [];
+  try {
+    fits = await sanityFetch(
+      `*[_type == "fit" && defined(photo.asset)] | order(order asc, _createdAt desc)[0...8]`
+    );
+  } catch (e) { /* leave it empty */ }
+
+  const shots = (fits || [])
+    .map(f => ({ src: imageUrl(f.photo?.asset?._ref), date: f.date || '' }))
+    .filter(s => s.src);
+
+  if (!shots.length) {
+    stage.innerHTML = '<span class="ih-fits-empty">👗</span>';
+    return;
+  }
+
+  stage.innerHTML = shots
+    .map(s => `<img class="ih-fits-slide" src="${s.src}?w=700&h=900&fit=crop&auto=format" alt=""/>`)
+    .join('');
+  const slides = [...stage.querySelectorAll('.ih-fits-slide')];
+
+  let i = 0;
+  function show(n) {
+    slides.forEach((el, k) => el.classList.toggle('on', k === n));
+    if (dateEl) dateEl.textContent = shots[n].date;
+  }
+  show(0);
+
+  if (shots.length > 1) {
+    setInterval(() => {
+      i = (i + 1) % slides.length;
+      show(i);
+    }, 5200);
+  }
+
+  document.getElementById('ih-fits').addEventListener('click', () => openFolder('fits'));
+}
+
+async function initIhNote() {
+  const wrap = document.getElementById('ih-note');
+  if (!wrap) return;
+  let note = null;
+  try {
+    const rows = await sanityFetch(
+      `*[_type == "homeNote" && defined(body)] | order(order asc, _createdAt desc)[0...1]`
+    );
+    note = rows && rows[0];
+  } catch (e) { /* fall through to the default */ }
+
+  const head = document.getElementById('ih-note-head');
+  const body = document.getElementById('ih-note-body');
+  if (note) {
+    if (note.title) head.textContent = note.title;
+    body.textContent = note.body;
+  } else {
+    // nothing posted yet — say something rather than sit empty
+    body.textContent = 'Everything here is something I made or something I love. Poke around.';
+  }
+}
+
 if (isMobile()) {
   initIhMusic();
+  initIhFits();
+  initIhNote();
   initIhWeather();
   initIhClocks();
 }

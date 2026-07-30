@@ -17,6 +17,7 @@ const DESTINATIONS = new Set([
   "fit",
   "designProject",
   "thingsILike",
+  "homeNote",
 ]);
 
 /** "July 19, 2026" — same style as the existing fit documents */
@@ -65,6 +66,21 @@ export async function POST(req: NextRequest) {
       destination === "thingsILike" && (tilType === "music" || tilType === "video");
     if (isTilLink && !linkUrl) {
       return NextResponse.json({ error: "Link URL required" }, { status: 400 });
+    }
+
+    // Notes are text only — bail early, no asset pipeline needed.
+    if (destination === "homeNote") {
+      if (!caption) {
+        return NextResponse.json({ error: "Write something" }, { status: 400 });
+      }
+      const noteDoc: Record<string, unknown> = {
+        _type: "homeNote",
+        title: title || undefined,
+        body: caption,
+      };
+      if (order !== undefined) noteDoc.order = order;
+      const createdNote = await client.create(noteDoc as { _type: string });
+      return NextResponse.json({ ok: true, id: createdNote._id });
     }
 
     // Photo optional for music (embed-first) and TIL link items (no image field)

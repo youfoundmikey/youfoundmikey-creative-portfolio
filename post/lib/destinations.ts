@@ -1,11 +1,12 @@
-// The four real sections of the site. Publishing creates documents of
+// The real sections of the site. Publishing creates documents of
 // these exact types, so everything shows up where it already lives.
 
 export type DestinationId =
   | "musicProject"
   | "fit"
   | "designProject"
-  | "thingsILike";
+  | "thingsILike"
+  | "homeNote";
 
 export interface Destination {
   id: DestinationId;
@@ -42,6 +43,13 @@ export const DESTINATIONS: Destination[] = [
     label: "things i like",
     titlePlaceholder: null,
     captionPlaceholder: "Caption",
+    titleRequired: false,
+  },
+  {
+    id: "homeNote",
+    label: "note",
+    titlePlaceholder: "Title — optional",
+    captionPlaceholder: "What's on your mind",
     titleRequired: false,
   },
 ];

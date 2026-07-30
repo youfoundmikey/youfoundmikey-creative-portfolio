@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // Everything the edit screen needs, across all four types, newest first.
 // Fields that don't exist on a type just come back null — that's fine.
-const QUERY = `*[_type in ["musicProject","fit","designProject","thingsILike"]]
+const QUERY = `*[_type in ["musicProject","fit","designProject","thingsILike","homeNote"]]
   | order(_createdAt desc)[0...100]{
   _id,
   _type,
@@ -21,6 +21,8 @@ const QUERY = `*[_type in ["musicProject","fit","designProject","thingsILike"]]
   // designProject
   name, type,
   "images": images[]{ _key, "url": asset->url },
+  // homeNote
+  body,
   // thingsILike
   caption, category,
   "media": media[]{ _key, type, linkUrl, linkTitle, "url": image.asset->url }

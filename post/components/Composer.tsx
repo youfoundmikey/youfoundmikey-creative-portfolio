@@ -144,7 +144,8 @@ export default function Composer() {
 
   // Photo optional for music (embed-first) and for TIL link items (no image field)
   const isTilLink = dest === "thingsILike" && tilKind !== "photo";
-  const photoRequired = dest !== "musicProject" && !isTilLink;
+  const isNote = dest === "homeNote"; // text only — no media area at all
+  const photoRequired = dest !== "musicProject" && !isTilLink && !isNote;
 
   const totalSize = picked.reduce((sum, p) => sum + p.file.size, 0);
 
@@ -154,6 +155,7 @@ export default function Composer() {
     if (photoRequired && picked.length === 0) return;
     if (destination.titleRequired && !title.trim()) return;
     if (isTilLink && !linkUrl.trim()) return;
+    if (isNote && !caption.trim()) return;
 
     setErrorMsg("");
     let uploads: File[] = [];
@@ -239,6 +241,7 @@ export default function Composer() {
     (!photoRequired || picked.length > 0) &&
     (!destination.titleRequired || !!title.trim()) &&
     (!isTilLink || !!linkUrl.trim()) &&
+    (!isNote || !!caption.trim()) &&
     status !== "uploading";
 
   return (
@@ -266,7 +269,14 @@ export default function Composer() {
         }}
       />
 
-      {picked.length === 0 ? (
+      {isNote ? (
+        <div className="mx-6 mt-2 flex min-h-[18svh] flex-col items-center justify-center bg-ink/[0.04]">
+          <span className="font-heading text-4xl italic text-ink/30">note</span>
+          <span className="mt-1 text-sm text-ink/40">
+            shows on the phone home screen
+          </span>
+        </div>
+      ) : picked.length === 0 ? (
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}

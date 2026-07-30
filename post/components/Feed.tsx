@@ -44,6 +44,8 @@ interface FeedItem {
   caption?: string;
   category?: string;
   media?: MediaItem[];
+  // homeNote
+  body?: string;
 }
 
 interface NewPhoto {
@@ -79,6 +81,8 @@ function typeLabel(t: DestinationId) {
 
 function itemTitle(item: FeedItem) {
   switch (item._type) {
+    case "homeNote":
+      return item.title || item.body || "Note";
     case "musicProject":
       return item.title || "Untitled";
     case "fit":
@@ -92,6 +96,8 @@ function itemTitle(item: FeedItem) {
 
 function itemSub(item: FeedItem) {
   switch (item._type) {
+    case "homeNote":
+      return item.title ? item.body : "";
     case "musicProject":
       return item.desc;
     case "fit":
@@ -158,7 +164,9 @@ function freshEdit(item: FeedItem): EditState {
         ? item.type ?? ""
         : item._type === "thingsILike"
           ? item.caption ?? ""
-          : item.desc ?? "",
+          : item._type === "homeNote"
+            ? item.body ?? ""
+            : item.desc ?? "",
     category: item.category ?? "",
     emoji: item.emoji ?? "",
     color: item.color ?? "",
@@ -424,6 +432,7 @@ export default function Feed() {
               {isOpen && edit && (
                 <div className="flex flex-col gap-1 px-6 pb-5">
                   {/* photos — tap × to mark for removal, ↩ to undo */}
+                  {item._type !== "homeNote" && (
                   <div className="grid grid-cols-4 gap-1.5 pb-2">
                       {photos.map((p) => {
                         const removed =
@@ -544,6 +553,7 @@ export default function Feed() {
                         </label>
                       )}
                     </div>
+                  )}
                   {item._type === "fit" && edit.newPhotos.length > 0 && (
                     <p className="pb-1 text-xs text-ink/40">
                       new photo will replace the current one
@@ -657,7 +667,9 @@ export default function Feed() {
                           ? "Date"
                           : item._type === "designProject"
                             ? "Project name"
-                            : "Title"
+                            : item._type === "homeNote"
+                              ? "Title — optional"
+                              : "Title"
                       }
                       className={`${inputCls} text-lg`}
                     />
@@ -728,9 +740,11 @@ export default function Feed() {
                         ? "Type — Website, Album Cover…"
                         : item._type === "thingsILike"
                           ? "Caption"
-                          : "Description"
+                          : item._type === "homeNote"
+                            ? "What's on your mind"
+                            : "Description"
                     }
-                    rows={2}
+                    rows={item._type === "homeNote" ? 4 : 2}
                     className={inputCls}
                   />
                   <input

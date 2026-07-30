@@ -16,4 +16,5 @@ export const DOC_TYPES = new Set([
   "fit",
   "designProject",
   "thingsILike",
+  "homeNote",
 ]);
