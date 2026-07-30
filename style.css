@@ -2826,7 +2826,7 @@ body { height: 100dvh; }
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px 0;
-    padding: 16px 12px 0;
+    padding: 16px 8px 0;
   }
   .ih-app {
     display: flex;
@@ -2842,8 +2842,8 @@ body { height: 100dvh; }
   .ih-app:active .ih-icon { transform: scale(0.9); filter: brightness(0.8); }
 
   .ih-icon {
-    width: 62px; height: 62px;
-    border-radius: 15px;
+    width: 72px; height: 72px;
+    border-radius: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2858,11 +2858,11 @@ body { height: 100dvh; }
     display: block;
   }
   .ih-label {
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 500;
     color: rgba(255,255,255,0.92);
     text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    max-width: 76px;
+    max-width: 84px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
