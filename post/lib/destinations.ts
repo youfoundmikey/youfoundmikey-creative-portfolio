@@ -27,7 +27,7 @@ export const DESTINATIONS: Destination[] = [
   {
     id: "fit",
     label: "fit",
-    titlePlaceholder: "Date — leave blank for today",
+    titlePlaceholder: "Date (blank = today)",
     captionPlaceholder: "Description",
     titleRequired: false,
   },
@@ -35,7 +35,7 @@ export const DESTINATIONS: Destination[] = [
     id: "designProject",
     label: "design",
     titlePlaceholder: "Project name",
-    captionPlaceholder: "Type — Website, Album Cover…",
+    captionPlaceholder: "Type: Website, Album Cover…",
     titleRequired: true,
   },
   {
@@ -48,7 +48,7 @@ export const DESTINATIONS: Destination[] = [
   {
     id: "homeNote",
     label: "note",
-    titlePlaceholder: "Title — optional",
+    titlePlaceholder: "Title (optional)",
     captionPlaceholder: "What's on your mind",
     titleRequired: false,
   },

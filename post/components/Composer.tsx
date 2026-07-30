@@ -229,7 +229,7 @@ export default function Composer() {
     };
 
     xhr.onerror = () => {
-      setErrorMsg("Network dropped. Everything's still here — retry.");
+      setErrorMsg("Network dropped. Everything's still here. Retry.");
       setStatus("error");
     };
 
@@ -291,7 +291,7 @@ export default function Composer() {
                 ? "add photos (optional)"
                 : dest === "fit"
                   ? "add a photo"
-                  : "add photos — one or many"}
+                  : "add photos, one or many"}
           </span>
         </button>
       ) : (
@@ -346,13 +346,13 @@ export default function Composer() {
           {dest === "fit" && picked.length > 1 && (
             <span className="text-accent">
               {" "}
-              · fits take one photo — only the first will post
+              · fits take one photo, only the first will post
             </span>
           )}
           {totalSize > SIZE_WARN && (
             <span className="text-accent">
               {" "}
-              · big upload — if it fails, try fewer photos
+              · big upload, if it fails try fewer photos
             </span>
           )}
         </p>

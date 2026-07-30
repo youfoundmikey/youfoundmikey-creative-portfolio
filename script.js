@@ -1,18 +1,12 @@
-// Clock — desktop menubar (HH:MM:SS) and iPhone status bar (h:mm)
+// Clock for the desktop menubar
 function updateClock() {
-  const now = new Date();
   const el = document.getElementById('clock');
-  if (el) {
-    const h = now.getHours().toString().padStart(2, '0');
-    const m = now.getMinutes().toString().padStart(2, '0');
-    const s = now.getSeconds().toString().padStart(2, '0');
-    el.textContent = `${h}:${m}:${s}`;
-  }
-  const ihEl = document.getElementById('ih-clock');
-  if (ihEl) {
-    const h12 = now.getHours() % 12 || 12;
-    ihEl.textContent = `${h12}:${now.getMinutes().toString().padStart(2, '0')}`;
-  }
+  if (!el) return;
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  const s = now.getSeconds().toString().padStart(2, '0');
+  el.textContent = `${h}:${m}:${s}`;
 }
 updateClock();
 setInterval(updateClock, 1000);
@@ -96,7 +90,7 @@ async function openMusicFolder() {
   overlay.querySelectorAll('.music-list-item').forEach(card => {
     card.addEventListener('click', () => {
       const p = musicProjects[card.dataset.projectIndex];
-      // detail opens on top of the list — back returns to the list
+      // detail opens on top of the list; back returns to the list
       openProjectDetail(p);
     });
   });
@@ -252,7 +246,7 @@ async function openDesignFolder() {
   `;
   mountModal(overlay, 'design');
 
-  // tap a design image to expand it — same lightbox as the fits archive
+  // tap a design image to expand it, same lightbox as the fits archive
   overlay.querySelectorAll('.design-img').forEach(img => {
     img.style.cursor = 'zoom-in';
     img.addEventListener('click', () => openLightbox(img.src));
@@ -431,7 +425,7 @@ document.querySelectorAll('.folder[data-folder]').forEach(el => {
   });
 });
 
-// iPhone home screen apps — single tap, like the real thing
+// iPhone home screen apps: single tap, like the real thing
 document.querySelectorAll('.ih-app[data-folder]').forEach(el => {
   el.addEventListener('click', () => openFolder(el.dataset.folder));
 });
@@ -478,109 +472,49 @@ document.querySelectorAll('.folder[data-folder]').forEach(el => {
 const hashFolder = location.hash.replace('#', '');
 if (hashFolder) openFolder(hashFolder);
 
-// ── iPhone home widgets: now playing, weather, world clock ──
+// ── iPhone home widgets: spinning CD, fits carousel, notes ──
 
-async function initIhMusic() {
-  const btn = document.getElementById('ih-music');
+async function initIhCd() {
+  const btn = document.getElementById('ih-cd');
   if (!btn) return;
   await loadMusicProjects();
-  // newest project wins; fallback list has no dates, so [0] is fine
-  const p = [...musicProjects].sort((a, b) =>
-    (b.createdAt || '').localeCompare(a.createdAt || '')
-  )[0];
-  if (!p) return;
 
-  const art = document.getElementById('ih-music-art');
-  const src = p.photos?.[0]?.src;
-  if (src) {
-    art.innerHTML = `<img src="${src}" alt=""/>`;
-  } else {
-    art.style.background = p.color || '#2a2a2a';
-    art.textContent = p.emoji || '🎵';
+  const stage = document.getElementById('ih-cd-stage');
+  const titleEl = document.getElementById('ih-cd-title');
+
+  // every project with a cover; projects without one still get a turn
+  // on the disc using their color + emoji
+  const discs = musicProjects.map(p => ({
+    src: p.photos?.[0]?.src || null,
+    title: p.title || 'Untitled',
+    color: p.color || '#2a2a2a',
+    emoji: p.emoji || '🎵',
+    project: p,
+  }));
+  if (!discs.length) return;
+
+  stage.innerHTML = discs.map(d => d.src
+    ? `<img class="ih-cd-cover" src="${d.src}?w=300&h=300&fit=crop&auto=format" alt=""/>`
+    : `<span class="ih-cd-cover ih-cd-fallback" style="background:${d.color};">${d.emoji}</span>`
+  ).join('');
+  const covers = [...stage.children];
+
+  let i = 0;
+  function show(n) {
+    covers.forEach((el, k) => el.classList.toggle('on', k === n));
+    titleEl.textContent = discs[n].title;
   }
-  document.getElementById('ih-music-title').textContent = p.title || 'Untitled';
-  btn.addEventListener('click', () => openProjectDetail(p));
-}
+  show(0);
 
-const IH_WX_CODES = [
-  [[0], 'Clear', 'sun'],
-  [[1, 2], 'Partly cloudy', 'partly'],
-  [[3], 'Cloudy', 'cloud'],
-  [[45, 48], 'Foggy', 'fog'],
-  [[51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82], 'Rain', 'rain'],
-  [[71, 73, 75, 77, 85, 86], 'Snow', 'snow'],
-  [[95, 96, 99], 'Thunderstorms', 'bolt'],
-];
-
-const IH_WX_ICONS = {
-  sun: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD60A"><circle cx="12" cy="12" r="5"/><g stroke="#FFD60A" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>',
-  partly: '<svg width="20" height="20" viewBox="0 0 24 24"><circle cx="9" cy="9" r="4" fill="#FFD60A"/><path d="M8 19a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 18 12a3.5 3.5 0 0 1-.5 7H8z" fill="#fff"/></svg>',
-  cloud: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M7 19a5 5 0 0 1-.7-9.95A6.5 6.5 0 0 1 19 11a4 4 0 0 1-.5 8H7z"/></svg>',
-  fog: '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M7 13a5 5 0 0 1-.7-9.95A6.5 6.5 0 0 1 19 5.5 4 4 0 0 1 18.5 13H7z" fill="#fff" opacity="0.9"/><g stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.7"><path d="M5 17h14M7 20.5h10"/></g></svg>',
-  rain: '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M7 14a5 5 0 0 1-.7-9.95A6.5 6.5 0 0 1 19 6.5 4 4 0 0 1 18.5 14H7z" fill="#fff"/><g stroke="#9ECBFF" stroke-width="2" stroke-linecap="round"><path d="M8 17l-1 3.5M13 17l-1 3.5M18 17l-1 3.5"/></g></svg>',
-  snow: '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M7 14a5 5 0 0 1-.7-9.95A6.5 6.5 0 0 1 19 6.5 4 4 0 0 1 18.5 14H7z" fill="#fff"/><g fill="#fff"><circle cx="8" cy="18.5" r="1.3"/><circle cx="13" cy="20" r="1.3"/><circle cx="17" cy="17.5" r="1.3"/></g></svg>',
-  bolt: '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M7 13a5 5 0 0 1-.7-9.95A6.5 6.5 0 0 1 19 5.5 4 4 0 0 1 18.5 13H7z" fill="#fff"/><path d="M13 12l-4 6h3l-1.5 5 5-7h-3l1.8-4z" fill="#FFD60A"/></svg>',
-};
-
-async function initIhWeather() {
-  const tempEl = document.getElementById('ih-wx-temp');
-  if (!tempEl) return;
-  try {
-    const res = await fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.006' +
-      '&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min' +
-      '&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=1'
-    );
-    const d = await res.json();
-    const code = d.current?.weather_code ?? 3;
-    const match = IH_WX_CODES.find(([codes]) => codes.includes(code)) || IH_WX_CODES[2];
-    tempEl.textContent = `${Math.round(d.current.temperature_2m)}°`;
-    document.getElementById('ih-wx-cond').textContent = match[1];
-    document.getElementById('ih-wx-icon').innerHTML = IH_WX_ICONS[match[2]];
-    document.getElementById('ih-wx-hilo').textContent =
-      `H:${Math.round(d.daily.temperature_2m_max[0])}° L:${Math.round(d.daily.temperature_2m_min[0])}°`;
-  } catch (e) {
-    document.getElementById('ih-wx-cond').textContent = 'offline';
+  if (discs.length > 1) {
+    setInterval(() => {
+      i = (i + 1) % covers.length;
+      show(i);
+    }, 4500);
   }
-}
 
-function initIhClocks() {
-  const wrap = document.getElementById('ih-clocks');
-  if (!wrap) return;
-  const cities = [
-    ['LA', 'America/Los_Angeles'],
-    ['NYC', 'America/New_York'],
-    ['Paris', 'Europe/Paris'],
-    ['Seoul', 'Asia/Seoul'],
-  ];
-  wrap.innerHTML = cities.map(([label], i) => `
-    <div class="ih-clock">
-      <div class="ih-clock-face" id="ih-cf-${i}">
-        <div class="ih-hand ih-hand-h" id="ih-hh-${i}"></div>
-        <div class="ih-hand ih-hand-m" id="ih-hm-${i}"></div>
-        <div class="ih-clock-dot"></div>
-      </div>
-      <span class="ih-clock-label">${label}</span>
-    </div>
-  `).join('');
-
-  const fmts = cities.map(([, tz]) =>
-    new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: 'numeric', hour12: false })
-  );
-
-  function tick() {
-    const now = new Date();
-    fmts.forEach((fmt, i) => {
-      const parts = fmt.formatToParts(now);
-      const h = +parts.find(p => p.type === 'hour').value % 24;
-      const m = +parts.find(p => p.type === 'minute').value;
-      document.getElementById(`ih-hh-${i}`).style.transform = `rotate(${(h % 12) * 30 + m * 0.5}deg)`;
-      document.getElementById(`ih-hm-${i}`).style.transform = `rotate(${m * 6}deg)`;
-      document.getElementById(`ih-cf-${i}`).classList.toggle('day', h >= 6 && h < 18);
-    });
-  }
-  tick();
-  setInterval(tick, 10000);
+  // tapping the disc opens whichever project is showing
+  btn.addEventListener('click', () => openProjectDetail(discs[i].project));
 }
 
 async function initIhFits() {
@@ -642,15 +576,13 @@ async function initIhNote() {
     if (note.title) head.textContent = note.title;
     body.textContent = note.body;
   } else {
-    // nothing posted yet — say something rather than sit empty
+    // nothing posted yet, so say something rather than sit empty
     body.textContent = 'Everything here is something I made or something I love. Poke around.';
   }
 }
 
 if (isMobile()) {
-  initIhMusic();
+  initIhCd();
   initIhFits();
   initIhNote();
-  initIhWeather();
-  initIhClocks();
 }

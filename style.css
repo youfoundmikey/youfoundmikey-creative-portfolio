@@ -14,7 +14,7 @@ body {
   user-select: none;
 }
 
-/* ── Desktop ── */
+/* -- Desktop -- */
 .desktop {
   width: 100vw;
   height: 100vh;
@@ -24,7 +24,7 @@ body {
   flex-direction: column;
 }
 
-/* ── Desktop portrait ── */
+/* -- Desktop portrait -- */
 .desktop-portrait {
   position: absolute;
   top: 50%;
@@ -36,7 +36,7 @@ body {
   z-index: 0;
 }
 
-/* ── Top Right Bar ── */
+/* -- Top Right Bar -- */
 .topbar-right {
   position: absolute;
   top: 10px;
@@ -73,7 +73,7 @@ body {
   text-align: right;
 }
 
-/* ── Traffic Lights ── */
+/* -- Traffic Lights -- */
 .traffic-lights {
   position: absolute;
   top: 14px;
@@ -94,14 +94,14 @@ body {
 .tl-yellow { background: #febc2e; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); }
 .tl-green  { background: #28c840; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); }
 
-/* ── Desktop Area ── */
+/* -- Desktop Area -- */
 .desktop-area {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
 
-/* ── Folders ── */
+/* -- Folders -- */
 .folder, .desktop-item {
   position: absolute;
   display: flex;
@@ -149,17 +149,17 @@ body {
   text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
-/* ── Folder Icons ── */
+/* -- Folder Icons -- */
 .music-folder   { background-image: url('Tahoe Folders/Tahoe Blue Folder.png') !important; }
 .fits-folder    { background-image: url('Tahoe Folders/Tahoe Purple Folder.png') !important; }
 .design-folder  { background-image: url('Tahoe Folders/Tahoe Red Folder.png') !important; }
 .things-folder  { background-image: url('Tahoe Folders/Tahoe Green Folder.png') !important; }
 
-/* ── Text Styles ── */
+/* -- Text Styles -- */
 .white-text { display: none; }
 
 
-/* ── Center Identity ── */
+/* -- Center Identity -- */
 .center-identity {
   position: absolute;
   top: 50%;
@@ -191,7 +191,7 @@ body {
   text-shadow: 0 1px 6px rgba(0,0,0,0.15);
 }
 
-/* ── Music Grid ── */
+/* -- Music Grid -- */
 .modal-large {
   width: min(1400px, 96vw);
   min-height: 80vh;
@@ -301,7 +301,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Project Detail ── */
+/* -- Project Detail -- */
 .modal-project {
   width: min(1400px, 96vw);
   max-height: 94vh;
@@ -463,7 +463,7 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* ── Folder Open Modal ── */
+/* -- Folder Open Modal -- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -543,7 +543,7 @@ body {
   font-size: 13px;
 }
 
-/* ── Responsive ── */
+/* -- Responsive -- */
 @media (max-width: 900px) {
   .folder-icon {
     width: 68px;
@@ -554,7 +554,7 @@ body {
   }
 }
 
-/* ── Fits Folder ── */
+/* -- Fits Folder -- */
 .fits-body {
   padding: 32px;
   background: #f5f0eb;
@@ -627,7 +627,7 @@ body {
   line-height: 1.5;
 }
 
-/* ── Design Folder ── */
+/* -- Design Folder -- */
 .design-body {
   padding: 32px;
   background: #f5f0eb;
@@ -693,7 +693,7 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* ── Things I Like ── */
+/* -- Things I Like -- */
 .things-body {
   padding: 32px;
   background: #f5f0eb;
@@ -745,7 +745,7 @@ body {
   font-size: 16px;
 }
 
-/* ── Project Detail v2 ── */
+/* -- Project Detail v2 -- */
 .modal-project {
   width: min(1300px, 96vw);
   max-height: 92vh;
@@ -909,7 +909,7 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
-/* ── Scrapbook v2 (inspired layout) ── */
+/* -- Scrapbook v2 (inspired layout) -- */
 .sb2-window {
   position: relative;
   width: 96vw;
@@ -1091,7 +1091,7 @@ body {
   font-style: italic;
 }
 
-/* ── Project Detail (split layout) ── */
+/* -- Project Detail (split layout) -- */
 .pd-window {
   width: 90vw;
   max-width: 1100px;
@@ -1217,7 +1217,7 @@ body {
   flex: 1;
 }
 
-/* ── Things I Like ── */
+/* -- Things I Like -- */
 .til-window {
   width: min(1100px, 96vw);
   height: 88vh;
@@ -1363,7 +1363,7 @@ body {
   grid-column: 1 / -1;
 }
 
-/* ── TIL Filter Buttons ── */
+/* -- TIL Filter Buttons -- */
 .til-filters {
   display: flex;
   gap: 8px;
@@ -1410,7 +1410,7 @@ body {
 
 .til-inline-link:hover { color: #000; }
 
-/* ── YouTube thumbnail ── */
+/* -- YouTube thumbnail -- */
 .til-yt-thumb {
   display: block;
   position: relative;
@@ -1463,10 +1463,10 @@ body {
 }
 
 /* ════════════════════════════════════════
-   COHESIVE RESTYLE — dark editorial theme
+   COHESIVE RESTYLE : dark editorial theme
    ════════════════════════════════════════ */
 
-/* ── Topbar ── */
+/* -- Topbar -- */
 .topbar-right {
   background: rgba(20,20,20,0.55);
   backdrop-filter: blur(16px);
@@ -1479,7 +1479,7 @@ body {
 .topbar-icon:hover { color: #fff; opacity: 1; }
 .topbar-clock { color: rgba(255,255,255,0.9); font-weight: 500; }
 
-/* ── Folders ── */
+/* -- Folders -- */
 .folder-icon {
   width: 140px;
   height: 120px;
@@ -1505,20 +1505,20 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* Folder icons — PNG images */
+/* Folder icons : PNG images */
 .music-folder  { background: none; }
 .fits-folder   { background: none; }
 .design-folder { background: none; }
 .things-folder { background: none; }
 
-/* ── Modal overlay ── */
+/* -- Modal overlay -- */
 .modal-overlay {
   background: rgba(0,0,0,0.88);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* ── Modal window — dark ── */
+/* -- Modal window : dark -- */
 .modal-window {
   background: #141414;
   border: 1px solid rgba(255,255,255,0.08);
@@ -1533,7 +1533,7 @@ body {
 }
 .modal-title { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500; }
 
-/* ── Music body & grid ── */
+/* -- Music body & grid -- */
 .music-body { background: #141414; }
 
 .project-card {
@@ -1550,7 +1550,7 @@ body {
 .project-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
 .project-tag { font-size: 11px; letter-spacing: 0.06em; }
 
-/* ── Project detail (split) ── */
+/* -- Project detail (split) -- */
 .pd-window { background: #141414; }
 .pd-left   { background: #141414; border-right: 1px solid rgba(255,255,255,0.07); }
 .pd-right  { background: #141414; }
@@ -1577,7 +1577,7 @@ body {
 .pd-title  { color: rgba(255,255,255,0.95); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
 .pd-artist { color: rgba(255,255,255,0.4); font-size: 13px; }
 
-/* ── Fits body ── */
+/* -- Fits body -- */
 .fits-body   { background: #141414; }
 .fits-header { color: rgba(255,255,255,0.35); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 20px 24px 8px; }
 
@@ -1595,7 +1595,7 @@ body {
 .fit-date { color: rgba(255,255,255,0.5); font-size: 12px; }
 .fit-desc { color: rgba(255,255,255,0.7); font-size: 13px; }
 
-/* ── Design body ── */
+/* -- Design body -- */
 .design-body { background: #141414; }
 .design-section-title { color: rgba(255,255,255,0.35); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 20px 24px 12px; }
 
@@ -1605,7 +1605,7 @@ body {
   border: 1px solid rgba(255,255,255,0.06);
 }
 .design-preview { font-size: 32px; border-radius: 12px; }
-/* the info strip stayed white from the light-theme days — white text on
+/* the info strip stayed white from the light-theme days : white text on
    white bg made the notes invisible */
 .design-info { background: #1C1C1C; }
 .design-name { color: rgba(255,255,255,0.9); font-weight: 600; font-size: 14px; }
@@ -1618,7 +1618,7 @@ body {
   white-space: pre-line;  /* keep paragraph breaks here too */
 }
 
-/* ── Things I Like ── */
+/* -- Things I Like -- */
 .til-window .modal-titlebar { background: #1C1C1C; }
 .til-inner  { background: #141414; }
 .til-title  { color: rgba(255,255,255,0.95); }
@@ -1659,14 +1659,14 @@ body {
 
 .til-empty { color: rgba(255,255,255,0.2); }
 
-/* ── Scrollbars ── */
+/* -- Scrollbars -- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
 
 
-/* ── Project detail refinements ── */
+/* -- Project detail refinements -- */
 .pd-titlebar { background: #1C1C1C !important; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .pd-title-dot {
   width: 10px; height: 10px; border-radius: 50%;
@@ -1724,7 +1724,7 @@ body {
 .pd-artist { font-size: 13px; color: rgba(255,255,255,0.35); font-weight: 500; }
 .pd-player { padding: 0 28px 28px; }
 
-/* ── Project detail v2 ── */
+/* -- Project detail v2 -- */
 .pd-window {
   width: min(1100px, 96vw);
   height: 88vh;
@@ -1837,7 +1837,7 @@ body {
   gap: 10px;
 }
 
-/* ── Project detail v3 — no scroll ── */
+/* -- Project detail v3 : no scroll -- */
 .pd-window {
   width: 96vw !important;
   height: 92vh !important;
@@ -1903,7 +1903,7 @@ body {
   min-height: 120px;
 }
 
-/* ── Lightbox ── */
+/* -- Lightbox -- */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
@@ -1928,7 +1928,7 @@ body {
    ════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* ── Body / Desktop ── */
+  /* -- Body / Desktop -- */
   body {
     overflow: auto;
     background: radial-gradient(ellipse at 30% 40%, #1e1030 0%, #0d0d14 55%, #090910 100%);
@@ -1941,10 +1941,10 @@ body {
     background: transparent;
   }
 
-  /* ── Hide traffic lights on mobile (no window to close) ── */
+  /* -- Hide traffic lights on mobile (no window to close) -- */
   .traffic-lights { display: none; }
 
-  /* ── Topbar ── */
+  /* -- Topbar -- */
   .topbar-right {
     position: fixed;
     top: 10px;
@@ -1955,7 +1955,7 @@ body {
     z-index: 200;
   }
 
-  /* ── Portrait shrinks ── */
+  /* -- Portrait shrinks -- */
   .desktop-portrait {
     position: fixed;
     bottom: auto;
@@ -1967,7 +1967,7 @@ body {
     z-index: 0;
   }
 
-  /* ── Desktop area: switch to a 2×2 grid ── */
+  /* -- Desktop area: switch to a 2×2 grid -- */
   .desktop-area {
     position: relative;
     inset: auto;
@@ -1979,7 +1979,7 @@ body {
     height: auto;
   }
 
-  /* ── Folders: static inside the grid ── */
+  /* -- Folders: static inside the grid -- */
   .folder {
     position: static !important;
     display: flex;
@@ -1997,7 +1997,7 @@ body {
     font-size: 12px;
   }
 
-  /* ── Modals: full screen ── */
+  /* -- Modals: full screen -- */
   .modal-overlay {
     align-items: flex-end;
     padding: 0;
@@ -2011,7 +2011,7 @@ body {
     overflow-y: auto;
   }
 
-  /* ── Music grid: single column ── */
+  /* -- Music grid: single column -- */
   .music-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 10px !important;
@@ -2022,7 +2022,7 @@ body {
     padding: 16px 12px !important;
   }
 
-  /* ── Project detail: stack vertically ── */
+  /* -- Project detail: stack vertically -- */
   .pd-window {
     width: 100vw !important;
     height: 92vh !important;
@@ -2075,7 +2075,7 @@ body {
     grid-template-columns: 1fr !important;
   }
 
-  /* ── Fits grid ── */
+  /* -- Fits grid -- */
   .fits-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 10px !important;
@@ -2086,14 +2086,14 @@ body {
     height: 160px !important;
   }
 
-  /* ── Design grid ── */
+  /* -- Design grid -- */
   .design-grid {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
     padding: 12px !important;
   }
 
-  /* ── Things I Like ── */
+  /* -- Things I Like -- */
   .til-window {
     width: 100vw !important;
     height: 92vh !important;
@@ -2122,11 +2122,11 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════
-   HOMEPAGE REDESIGN — personal OS × poster
+   HOMEPAGE REDESIGN : personal OS × poster
    Appended layer: overrides above styles, touches nothing modal
    ════════════════════════════════════════════════════════════ */
 
-/* ── Wallpaper: deeper, warmer, lit ── */
+/* -- Wallpaper: deeper, warmer, lit -- */
 .desktop {
   background:
     radial-gradient(ellipse 60% 50% at 50% 60%, #241436 0%, transparent 70%),
@@ -2157,7 +2157,7 @@ body {
   mix-blend-mode: overlay;
 }
 
-/* ── Menu bar ── */
+/* -- Menu bar -- */
 .menubar {
   position: absolute;
   top: 0;
@@ -2228,7 +2228,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Poster type: the name IS the wallpaper ── */
+/* -- Poster type: the name IS the wallpaper -- */
 .poster-type {
   position: absolute;
   inset: 42px 0 0 0;
@@ -2263,7 +2263,7 @@ body {
   opacity: 0.92;
 }
 
-/* ── Portrait: grounded + lit ── */
+/* -- Portrait: grounded + lit -- */
 .desktop-portrait {
   z-index: 1;
   filter: drop-shadow(0 24px 70px rgba(120, 76, 220, 0.35));
@@ -2272,7 +2272,7 @@ body {
   animation: portraitIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Folders: springy, staggered in ── */
+/* -- Folders: springy, staggered in -- */
 .folder {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
   animation: folderIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
@@ -2298,7 +2298,7 @@ body {
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* ── Ticker ── */
+/* -- Ticker -- */
 .ticker {
   position: absolute;
   bottom: 0;
@@ -2334,7 +2334,7 @@ body {
   padding: 0 6px;
 }
 
-/* ── Motion ── */
+/* -- Motion -- */
 @keyframes posterIn {
   from { opacity: 0; transform: translateY(30px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -2360,7 +2360,7 @@ body {
   .ticker-track { animation-duration: 240s; }
 }
 
-/* ── Small screens ── */
+/* -- Small screens -- */
 @media (max-width: 820px) {
   .menubar-items { display: none; }
 }
@@ -2374,7 +2374,7 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════
-   FOLDER TREATMENT — same icons, now part of the scene
+   FOLDER TREATMENT : same icons, now part of the scene
    ════════════════════════════════════════════════════════════ */
 
 /* each folder's light signature (matches its Tahoe color) */
@@ -2456,7 +2456,7 @@ body {
 .folder { z-index: 2; }
 
 /* ════════════════════════════════════════════════════════════
-   FULLSCREEN PWA — respect the dynamic island / safe areas
+   FULLSCREEN PWA : respect the dynamic island / safe areas
    ════════════════════════════════════════════════════════════ */
 
 body { height: 100dvh; }
@@ -2481,7 +2481,7 @@ body { height: 100dvh; }
 }
 
 /* ════════════════════════════════════════════════════════════
-   TIL — music links get their own row under the media
+   TIL : music links get their own row under the media
    ════════════════════════════════════════════════════════════ */
 
 .til-links {
@@ -2534,7 +2534,7 @@ body { height: 100dvh; }
    BACK BUTTON + UNIFORM TIL CARDS
    ════════════════════════════════════════════════════════════ */
 
-/* one back button everywhere — traffic lights retired from the windows */
+/* one back button everywhere : traffic lights retired from the windows */
 .modal-back {
   width: 28px;
   height: 28px;
@@ -2626,7 +2626,7 @@ body { height: 100dvh; }
 }
 
 /* ════════════════════════════════════════════════════════════
-   iPHONE HOME SCREEN — phones get iOS, desktops keep macOS
+   iPHONE HOME SCREEN : phones get iOS, desktops keep macOS
    ════════════════════════════════════════════════════════════ */
 
 .iphone-home { display: none; }
@@ -2654,19 +2654,9 @@ body { height: 100dvh; }
     overflow-y: auto;
   }
 
-  /* ── status bar ── */
-  .ih-status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 28px 6px;
-  }
-  .ih-time { font-size: 16px; font-weight: 600; letter-spacing: 0.02em; }
-  .ih-status-right { display: flex; align-items: center; gap: 6px; }
-
-  /* ── welcome widget ── */
+  /* -- welcome widget -- */
   .ih-welcome {
-    margin: 12px 20px 0;
+    margin: 20px 20px 0;
     padding: 14px 16px;
     border-radius: 22px;
     background: rgba(16, 14, 24, 0.62);
@@ -2690,68 +2680,100 @@ body { height: 100dvh; }
     margin: 0;
   }
 
-  /* ── now playing — latest project ── */
-  .ih-music {
+  /* -- spinning CD: cycles every music project cover -- */
+  .ih-cd {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin: 12px 20px 0;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border: 0;
     border-radius: 20px;
-    background: rgba(18, 18, 18, 0.92);
+    background: rgba(14, 13, 18, 0.72);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     text-align: left;
     -webkit-tap-highlight-color: transparent;
     box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
-  .ih-music:active { transform: scale(0.98); }
-  .ih-music-art {
-    width: 46px; height: 46px;
-    border-radius: 10px;
-    overflow: hidden;
+  .ih-cd:active { transform: scale(0.98); }
+
+  .ih-cd-disc {
+    position: relative;
+    width: 74px; height: 74px;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    background: #2a2a2a;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #1a1a1c;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
+    animation: ihSpin 9s linear infinite;
   }
-  .ih-music-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ih-music-meta {
+  .ih-cd-stage { position: absolute; inset: 0; display: block; }
+  .ih-cd-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .ih-cd-cover.on { opacity: 1; }
+  .ih-cd-fallback {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  /* the disc read: rainbow sheen + spindle hole */
+  .ih-cd-sheen {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background:
+      conic-gradient(from 210deg,
+        rgba(255,255,255,0.3) 0deg,
+        rgba(255,255,255,0) 40deg,
+        rgba(180,220,255,0.16) 130deg,
+        rgba(255,255,255,0) 200deg,
+        rgba(255,200,240,0.16) 280deg,
+        rgba(255,255,255,0.26) 340deg,
+        rgba(255,255,255,0) 360deg);
+    mix-blend-mode: screen;
+  }
+  .ih-cd-hole {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 20px; height: 20px;
+    margin: -10px 0 0 -10px;
+    border-radius: 50%;
+    background: #0d0c11;
+    box-shadow: 0 0 0 4px rgba(230,230,235,0.5), inset 0 0 0 1px rgba(0,0,0,0.6);
+  }
+
+  .ih-cd-meta {
     display: flex;
     flex-direction: column;
     min-width: 0;
     flex: 1;
-    gap: 1px;
+    gap: 2px;
   }
-  .ih-music-eyebrow {
+  .ih-cd-eyebrow {
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #1DB954;
+    color: rgba(255,255,255,0.45);
   }
-  .ih-music-title {
-    font-size: 14px;
+  .ih-cd-title {
+    font-size: 15px;
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .ih-music-artist { font-size: 11px; color: rgba(255,255,255,0.55); }
-  .ih-music-play {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: #1DB954;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding-left: 2px;
-  }
+  .ih-cd-artist { font-size: 11px; color: rgba(255,255,255,0.5); }
 
-  /* ── fits carousel ── */
+  /* -- fits carousel -- */
   .ih-fits {
     position: relative;
     border: 0;
@@ -2807,7 +2829,7 @@ body { height: 100dvh; }
     opacity: 0.35;
   }
 
-  /* ── notes widget ── */
+  /* -- notes widget -- */
   .ih-note {
     position: relative;
     border-radius: 20px;
@@ -2844,90 +2866,26 @@ body { height: 100dvh; }
     overflow: hidden;
   }
 
-  /* ── the CD spins, because it's a CD ── */
-  .ih-app[data-folder="music"] .ih-icon img {
-    animation: ihSpin 14s linear infinite;
-  }
+  /* the widget disc owns the spin; the app icon stays still so the
+     screen doesn't have two rotating CDs fighting each other */
   @keyframes ihSpin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ih-app[data-folder="music"] .ih-icon img { animation: none; }
+    .ih-cd-disc { animation: none; }
     .ih-fits-slide.on { animation: none; }
   }
 
-  /* ── weather + world clock row ── */
+  /* -- two-up widget row -- */
   .ih-widget-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin: 12px 20px 0;
   }
-  .ih-wx {
-    position: relative;
-    border-radius: 20px;
-    padding: 12px 14px;
-    min-height: 128px;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(180deg, #2E5FC7 0%, #5D9CE6 100%);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-    overflow: hidden;
-  }
-  .ih-wx-city { font-size: 12px; font-weight: 600; }
-  .ih-wx-icon { display: block; height: 20px; margin-top: 4px; }
-  .ih-wx-temp { font-size: 34px; font-weight: 300; line-height: 1.1; }
-  .ih-wx-cond { font-size: 11px; font-weight: 500; margin-top: auto; }
-  .ih-wx-hilo { font-size: 11px; color: rgba(255,255,255,0.75); }
 
-  .ih-clocks {
-    border-radius: 20px;
-    padding: 10px;
-    min-height: 128px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 8px;
-    background: rgba(24, 24, 26, 0.92);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  }
-  .ih-clock {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-  }
-  .ih-clock-face {
-    position: relative;
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: #000;
-    border: 1.5px solid rgba(255,255,255,0.18);
-  }
-  .ih-clock-face.day { background: #f4f4f4; }
-  .ih-hand {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    transform-origin: 50% 100%;
-    border-radius: 2px;
-    background: #fff;
-  }
-  .ih-clock-face.day .ih-hand { background: #111; }
-  .ih-hand-h { width: 2px; height: 9px; margin-left: -1px; }
-  .ih-hand-m { width: 1.5px; height: 13px; margin-left: -0.75px; }
-  .ih-clock-dot {
-    position: absolute;
-    left: 50%; top: 50%;
-    width: 3px; height: 3px;
-    margin: -1.5px 0 0 -1.5px;
-    border-radius: 50%;
-    background: #FF9F0A;
-  }
-  .ih-clock-label { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.7); }
-
-  /* ── app grid ── */
+  /* -- app grid -- */
   .ih-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -2974,7 +2932,7 @@ body { height: 100dvh; }
     text-overflow: ellipsis;
   }
 
-  /* ── dots + dock ── */
+  /* -- dots + dock -- */
   .ih-spacer { flex: 1; }
 
   .ih-dots {

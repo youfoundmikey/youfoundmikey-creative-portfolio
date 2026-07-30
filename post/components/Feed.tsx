@@ -668,7 +668,7 @@ export default function Feed() {
                           : item._type === "designProject"
                             ? "Project name"
                             : item._type === "homeNote"
-                              ? "Title — optional"
+                              ? "Title (optional)"
                               : "Title"
                       }
                       className={`${inputCls} text-lg`}
@@ -737,7 +737,7 @@ export default function Feed() {
                     onChange={(e) => patchEdit({ caption: e.target.value })}
                     placeholder={
                       item._type === "designProject"
-                        ? "Type — Website, Album Cover…"
+                        ? "Type: Website, Album Cover…"
                         : item._type === "thingsILike"
                           ? "Caption"
                           : item._type === "homeNote"
