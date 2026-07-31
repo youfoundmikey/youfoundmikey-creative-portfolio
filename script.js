@@ -586,3 +586,139 @@ if (isMobile()) {
   initIhFits();
   initIhNote();
 }
+
+
+/* ══════════════════════════════════════════════════════════════════
+   MOTION LAYER
+   Cursor parallax, the desktop read-me note, and mobile scroll life.
+   All of it bails out if the visitor asked for reduced motion.
+   ══════════════════════════════════════════════════════════════════ */
+
+const prefersReducedMotion =
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── Cursor parallax: the desk shifts a little as you move over it ── */
+(function initParallax() {
+  if (prefersReducedMotion) return;
+  const desk = document.querySelector('.desktop');
+  if (!desk) return;
+
+  let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+
+  function frame() {
+    // ease toward the pointer so it glides instead of snapping
+    cx += (tx - cx) * 0.08;
+    cy += (ty - cy) * 0.08;
+    desk.style.setProperty('--mx', cx.toFixed(4));
+    desk.style.setProperty('--my', cy.toFixed(4));
+    raf = (Math.abs(tx - cx) > 0.001 || Math.abs(ty - cy) > 0.001)
+      ? requestAnimationFrame(frame)
+      : null;
+  }
+
+  window.addEventListener('mousemove', e => {
+    if (isMobile()) return;
+    tx = (e.clientX / window.innerWidth  - 0.5) * 2;
+    ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    if (!raf) raf = requestAnimationFrame(frame);
+  }, { passive: true });
+
+  // drift back to centre when the cursor leaves the window
+  window.addEventListener('mouseleave', () => {
+    tx = 0; ty = 0;
+    if (!raf) raf = requestAnimationFrame(frame);
+  });
+})();
+
+/* ── The read-me note: drag it, close it, get it back from the "?" ── */
+(function initDesktopNote() {
+  const note   = document.getElementById('desktop-note');
+  const close  = document.getElementById('dn-close');
+  const reopen = document.getElementById('dn-reopen');
+  if (!note) return;
+
+  close?.addEventListener('click', e => {
+    e.stopPropagation();
+    note.classList.add('dn-hidden');
+  });
+
+  reopen?.addEventListener('click', () => {
+    note.classList.remove('dn-hidden');
+  });
+
+  // drag, same feel as the folders
+  let ndx = 0, ndy = 0, ndragging = false;
+
+  note.addEventListener('mousedown', e => {
+    if (isMobile() || e.target.closest('.dn-close')) return;
+    const r = note.getBoundingClientRect();
+    // hand positioning over to left/top so dragging is absolute
+    note.style.animation = 'none';
+    note.style.translate = '0 0';
+    note.style.bottom = 'auto';
+    note.style.left = r.left + 'px';
+    note.style.top  = r.top  + 'px';
+    ndx = e.clientX - r.left;
+    ndy = e.clientY - r.top;
+    ndragging = true;
+    note.classList.add('dn-dragging');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!ndragging) return;
+    const pad = 8;
+    const maxX = window.innerWidth  - note.offsetWidth  - pad;
+    const maxY = window.innerHeight - note.offsetHeight - pad;
+    note.style.left = Math.max(pad, Math.min(maxX, e.clientX - ndx)) + 'px';
+    note.style.top  = Math.max(38,  Math.min(maxY, e.clientY - ndy)) + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!ndragging) return;
+    ndragging = false;
+    note.classList.remove('dn-dragging');
+  });
+})();
+
+/* ── Mobile: wallpaper drifts on scroll, cards reveal as they arrive ── */
+(function initMobileMotion() {
+  if (!isMobile() || prefersReducedMotion) return;
+  const home = document.querySelector('.iphone-home');
+  if (!home) return;
+
+  // parallax the wallpaper at roughly a third of scroll speed
+  let ticking = false;
+  home.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      home.style.setProperty('--scrollShift', (home.scrollTop * 0.28) + 'px');
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // anything scrolled into view fades up once
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('seen');
+        io.unobserve(en.target);
+      }
+    });
+  }, { root: home, threshold: 0.12 });
+
+  // only tag what sits below the fold, so the top of the page never flashes
+  requestAnimationFrame(() => {
+    const fold = window.innerHeight * 0.94;
+    document.querySelectorAll(
+      '.ih-widget-row, .ih-cd, .ih-grid, .ih-dots'
+    ).forEach(el => {
+      if (el.getBoundingClientRect().top > fold) {
+        el.style.animation = 'none';
+        el.classList.add('reveal');
+        io.observe(el);
+      }
+    });
+  });
+})();

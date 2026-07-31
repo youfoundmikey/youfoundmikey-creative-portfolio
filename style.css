@@ -2962,3 +2962,857 @@ body { height: 100dvh; }
   .ih-dock-app { -webkit-tap-highlight-color: transparent; }
   .ih-dock-app:active .ih-icon { transform: scale(0.9); filter: brightness(0.8); }
 }
+
+
+/* ════════════════════════════════════════════════════════════════════
+   DTTG — the house typeface
+   Display face only. It ships 131 glyphs (A-Z, a-z as small caps, 0-9,
+   and ! ' , . ? ). No colon, hyphen, slash or @ — so body copy, the
+   clock and the email stay on Space Grotesk and nothing renders broken.
+   The 100-900 weight range on @font-face stops the browser faking bold.
+   ════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'DTTG';
+  src: url('fonts/DTTG.woff2') format('woff2'),
+       url('fonts/DTTG.ttf')   format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-display: 'DTTG', 'Anton', 'Space Grotesk', -apple-system, sans-serif;
+  --font-body: 'Space Grotesk', -apple-system, sans-serif;
+  --accent: #FF4000;
+}
+
+/* One rule, every display surface. DTTG is already heavy — weight 400
+   and tight tracking, or it reads bloated. */
+.menubar-wordmark,
+.menubar-items span,
+.poster-line,
+.folder-label,
+.icon-name,
+.ticker-track span,
+.modal-title,
+.pd-title, .pd-hero-title, .pd-note-label, .pd-photos-label, .pd-player-label,
+.sb2-title, .sb2-win-title,
+.project-title, .project-banner-title, .project-tag,
+.music-list-title, .music-list-num,
+.design-section-title, .design-name, .design-type,
+.things-section-title, .thing-chip,
+.til-title, .til-polaroid-cat, .til-filter-btn, .til-link-label, .til-music-link-title,
+.fits-header, .fit-date,
+.center-name,
+.listen-btn, .modal-btn, .pd-listen-btn, .sb2-listen-btn, .pd-hero-btn,
+.ih-label, .ih-welcome-title, .ih-cd-title, .ih-cd-eyebrow,
+.ih-fits-label, .ih-note-head,
+.dn-title, .dn-hint-list li strong, .dn-tag {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+/* DTTG carries its own sidebearings — the old wide tracking blows it apart */
+.icon-name        { letter-spacing: 0.04em; font-size: 12px; }
+.ticker-track span{ letter-spacing: 0.18em; font-size: 11px; }
+.menubar-wordmark { letter-spacing: 0.02em; }
+.menubar-items span { letter-spacing: 0.03em; }
+.poster-line      { letter-spacing: -0.005em; line-height: 0.86; }
+.modal-title      { letter-spacing: 0.03em; }
+
+/* ════════════════════════════════════════════════════════════════════
+   MOTION — desktop
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Parallax rig. JS writes --mx / --my in the range -1..1.
+   Uses the standalone `translate` property so it never fights the
+   entrance keyframes, which animate transform. */
+.desktop {
+  --mx: 0;
+  --my: 0;
+}
+
+/* -- Ambient aurora: two slow blobs drifting behind everything -- */
+.desktop::before,
+.desktop::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
+  will-change: transform;
+}
+.desktop::before {
+  width: 46vw; height: 46vw;
+  top: -12vw; left: -8vw;
+  background: radial-gradient(circle, rgba(124, 72, 220, 0.34), transparent 68%);
+  animation: auroraA 26s ease-in-out infinite alternate;
+}
+.desktop::after {
+  width: 40vw; height: 40vw;
+  bottom: -14vw; right: -6vw;
+  background: radial-gradient(circle, rgba(255, 82, 24, 0.20), transparent 68%);
+  animation: auroraB 34s ease-in-out infinite alternate;
+}
+@keyframes auroraA {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(9vw, 6vw) scale(1.14); }
+  100% { transform: translate(3vw, 12vw) scale(0.94); }
+}
+@keyframes auroraB {
+  0%   { transform: translate(0, 0) scale(1.05); }
+  50%  { transform: translate(-11vw, -5vw) scale(0.9); }
+  100% { transform: translate(-4vw, -12vw) scale(1.16); }
+}
+
+/* -- Poster type: parallax drift + a light sweeping across the fill -- */
+.poster-type {
+  translate: calc(var(--mx) * -18px) calc(var(--my) * -12px);
+  transition: translate 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.poster-outline {
+  animation: outlineBreathe 7s ease-in-out infinite;
+}
+@keyframes outlineBreathe {
+  0%, 100% { -webkit-text-stroke-color: rgba(255,255,255,0.12); }
+  50%      { -webkit-text-stroke-color: rgba(255,255,255,0.30); }
+}
+
+/* Sheen rides across the gradient fill every 9s */
+.poster-fill {
+  background: linear-gradient(
+    100deg,
+    #f3e7d3 0%, #b5a3c9 34%,
+    #fff6e6 47%, #ffd9b8 51%, #b5a3c9 56%,
+    #5d4a78 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: posterSheen 9s ease-in-out infinite;
+}
+@keyframes posterSheen {
+  0%, 12%  { background-position: 140% 0; }
+  62%, 100%{ background-position: -40% 0; }
+}
+
+/* -- Portrait: parallax + a slow living sway -- */
+.desktop-portrait {
+  transform: none;
+  translate: calc(-50% + var(--mx) * 26px) calc(-50% + var(--my) * 16px);
+  transition: translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  animation:
+    portraitIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) both,
+    portraitSway 11s ease-in-out 1.1s infinite;
+}
+@keyframes portraitIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes portraitSway {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.012) rotate(0.5deg); }
+}
+
+/* -- Folders: bob on their own, tilt toward the cursor, spring on hover.
+      Float lives on .folder-icon so it never fights drag or hover. -- */
+.folder {
+  translate: calc(var(--mx) * 10px) calc(var(--my) * 7px);
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.35s ease,
+    translate 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.folder-icon {
+  animation: folderBob 6s ease-in-out infinite;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.folder:nth-child(1) .folder-icon { animation-delay: 0s;    }
+.folder:nth-child(2) .folder-icon { animation-delay: -1.5s; }
+.folder:nth-child(3) .folder-icon { animation-delay: -3s;   }
+.folder:nth-child(4) .folder-icon { animation-delay: -4.5s; }
+@keyframes folderBob {
+  0%, 100% { transform: translateY(0)     rotate(0deg);    }
+  50%      { transform: translateY(-9px)  rotate(-1.2deg); }
+}
+.folder:hover .folder-icon {
+  animation-play-state: paused;
+  transform: rotate(2.5deg) scale(1.03);
+}
+.folder:hover {
+  transform: translateY(-9px) scale(1.06);
+  filter: drop-shadow(0 22px 34px rgba(0,0,0,0.5))
+          drop-shadow(0 0 22px rgba(255, 96, 40, 0.28));
+}
+.folder .icon-name { transition: color 0.25s ease, letter-spacing 0.25s ease; }
+.folder:hover .icon-name { color: #fff; letter-spacing: 0.1em; }
+
+/* -- Menubar: wordmark letters stagger in, items wake on hover -- */
+.menubar-wordmark {
+  animation: wordmarkIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes wordmarkIn {
+  from { opacity: 0; transform: translateY(-8px); letter-spacing: 0.3em; }
+  to   { opacity: 1; transform: translateY(0);    letter-spacing: 0.02em; }
+}
+.menubar-items span {
+  position: relative;
+  cursor: default;
+  transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.menubar-items span::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 100%; bottom: -3px;
+  height: 1.5px;
+  background: var(--accent);
+  transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.menubar-items span:hover { color: #fff; transform: translateY(-1px); }
+.menubar-items span:hover::after { right: 0; }
+
+/* Traffic lights breathe, and pop under the cursor */
+.traffic-lights .tl { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease; }
+.traffic-lights:hover .tl { transform: scale(1.2); }
+.tl-green { animation: tlPulse 3.4s ease-in-out infinite; }
+@keyframes tlPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(80, 220, 120, 0.5); }
+  55%      { box-shadow: 0 0 0 5px rgba(80, 220, 120, 0); }
+}
+
+/* Social icons in the bar get a little spring */
+.topbar-icon {
+  transition: opacity 0.15s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.2s;
+}
+.topbar-icon:hover { transform: translateY(-2px) scale(1.18) rotate(-5deg); }
+
+/* Ticker stars twinkle as they pass */
+.ticker-track em { animation: starTwinkle 2.6s ease-in-out infinite; }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.25); }
+}
+
+/* Windows open with a spring instead of a slide */
+.modal-window, .pd-window, .til-window, .sb2-window {
+  animation: winPop 0.42s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+}
+@keyframes winPop {
+  from { opacity: 0; transform: translateY(26px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.modal-overlay { animation: fadeIn 0.25s ease; }
+
+/* ════════════════════════════════════════════════════════════════════
+   DESKTOP NOTE — the "what is this / how do I use it" panel.
+   Desktop counterpart to the mobile welcome widget. Styled as a
+   Stickies note so it belongs on the desktop instead of sitting on top
+   of it. Draggable, dismissable, re-openable from the "?" in the bar.
+   ════════════════════════════════════════════════════════════════════ */
+
+.desktop-note {
+  position: absolute;
+  left: 2.4%;
+  bottom: 62px;
+  width: 292px;
+  padding: 15px 17px 16px;
+  z-index: 20;
+  border-radius: 16px;
+  background: rgba(18, 15, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45),
+              inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  color: #fff;
+  rotate: -1.4deg;
+  cursor: grab;
+  animation: noteIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) 1.05s both;
+  transition: rotate 0.4s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.35s ease,
+              opacity 0.3s ease,
+              scale 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.desktop-note:hover {
+  rotate: 0deg;
+  scale: 1.02;
+  box-shadow: 0 26px 60px rgba(0,0,0,0.55),
+              0 0 30px rgba(255, 96, 40, 0.14),
+              inset 0 1px 0 rgba(255,255,255,0.09);
+}
+.desktop-note.dn-dragging { cursor: grabbing; rotate: 0deg; transition: none; }
+.desktop-note.dn-hidden {
+  opacity: 0;
+  scale: 0.9;
+  pointer-events: none;
+}
+@keyframes noteIn {
+  from { opacity: 0; translate: -28px 18px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* the little torn-tape strip at the top */
+.dn-tape {
+  position: absolute;
+  top: -9px; left: 50%;
+  translate: -50% 0;
+  width: 62px; height: 17px;
+  background: linear-gradient(180deg, rgba(255,246,230,0.24), rgba(255,246,230,0.11));
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 2px;
+  rotate: -2deg;
+  backdrop-filter: blur(3px);
+}
+
+.dn-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+.dn-dots { display: flex; gap: 5px; }
+.dn-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+.dn-dot.dn-live { background: var(--accent); animation: tlPulse 3s ease-in-out infinite; }
+.dn-title {
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  margin: 0;
+  flex: 1;
+}
+.dn-title-dot { color: var(--accent); }
+.dn-close {
+  background: none; border: 0; padding: 0;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  color: rgba(255,255,255,0.4);
+  font-size: 15px; line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.dn-close:hover { color: #fff; background: rgba(255,255,255,0.12); rotate: 90deg; }
+
+.dn-body {
+  font-family: var(--font-body);
+  font-size: 12.2px;
+  line-height: 1.58;
+  color: rgba(255,255,255,0.72);
+  margin: 0 0 11px;
+}
+
+.dn-hint-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 11px;
+}
+.dn-hint-list li {
+  font-family: var(--font-body);
+  font-size: 11.6px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.62);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  opacity: 0;
+  animation: hintIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.dn-hint-list li:nth-child(1) { animation-delay: 1.5s; }
+.dn-hint-list li:nth-child(2) { animation-delay: 1.65s; }
+.dn-hint-list li:nth-child(3) { animation-delay: 1.8s; }
+@keyframes hintIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.dn-key {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  min-width: 22px; height: 20px;
+  padding: 0 5px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-bottom-width: 2px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.82);
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
+}
+.dn-hint-list li:hover .dn-key {
+  transform: translateY(-2px);
+  background: rgba(255, 64, 0, 0.28);
+}
+
+/* "?" button in the menubar that brings the note back */
+.dn-reopen {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.dn-reopen:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  transform: scale(1.15) rotate(8deg);
+}
+
+/* the note is a desktop thing; phones already have the welcome widget */
+@media (max-width: 768px) {
+  .desktop-note, .dn-reopen { display: none; }
+}
+
+/* keep it out of the way on short or narrow windows */
+@media (max-height: 720px), (max-width: 1080px) {
+  .desktop-note { width: 258px; bottom: 52px; padding: 13px 14px 14px; }
+  .dn-title { font-size: 15px; }
+  .dn-body  { font-size: 11.4px; }
+}
+@media (max-height: 600px) {
+  .desktop-note .dn-hint-list { display: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   MOTION — mobile
+   ════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* wallpaper drifts under the content as you scroll */
+  .iphone-home {
+    background-attachment: scroll;
+    background-position:
+      center top,
+      center calc(30% + var(--scrollShift, 0px));
+  }
+
+  /* every widget rises into place, staggered */
+  .ih-welcome, .ih-widget-row, .ih-cd, .ih-grid, .ih-dots, .ih-dock {
+    animation: ihRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .ih-welcome    { animation-delay: 0.05s; }
+  .ih-widget-row { animation-delay: 0.14s; }
+  .ih-cd         { animation-delay: 0.23s; }
+  .ih-grid       { animation-delay: 0.32s; }
+  .ih-dots       { animation-delay: 0.42s; }
+  .ih-dock       { animation-delay: 0.5s;  }
+  @keyframes ihRise {
+    from { opacity: 0; transform: translateY(26px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  /* app icons pop in one after another, then breathe */
+  .ih-grid .ih-app {
+    animation: ihPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .ih-grid .ih-app:nth-child(1) { animation-delay: 0.40s; }
+  .ih-grid .ih-app:nth-child(2) { animation-delay: 0.48s; }
+  .ih-grid .ih-app:nth-child(3) { animation-delay: 0.56s; }
+  .ih-grid .ih-app:nth-child(4) { animation-delay: 0.64s; }
+  @keyframes ihPop {
+    from { opacity: 0; transform: scale(0.6) translateY(14px); }
+    to   { opacity: 1; transform: scale(1)   translateY(0); }
+  }
+
+  .ih-app, .ih-dock-app {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .ih-app:active     { transform: scale(0.88); }
+  .ih-dock-app:active{ transform: scale(0.84) translateY(-4px); }
+
+  .ih-icon img { transition: filter 0.3s ease; }
+  .ih-app:active .ih-icon img { filter: brightness(1.25); }
+
+  /* the CD sits in a warm glow that breathes with the spin */
+  .ih-cd-disc {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5),
+                inset 0 0 0 1px rgba(255,255,255,0.1);
+  }
+  .ih-cd { position: relative; overflow: hidden; }
+  .ih-cd::before {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at 18% 50%, rgba(255, 96, 40, 0.22), transparent 46%);
+    pointer-events: none;
+    animation: ihGlow 5.5s ease-in-out infinite;
+  }
+  @keyframes ihGlow {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.13); }
+  }
+
+  /* a light sweeps across the welcome + note cards */
+  .ih-welcome, .ih-note { position: relative; overflow: hidden; }
+  .ih-welcome::after, .ih-note::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 42%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.09), transparent);
+    pointer-events: none;
+    animation: ihSweep 7s ease-in-out infinite;
+  }
+  .ih-note::after { animation-delay: 1.4s; }
+  @keyframes ihSweep {
+    0%, 55%  { left: -50%; }
+    92%, 100%{ left: 130%; }
+  }
+
+  /* the orange dot in "Welcome to my mind." keeps time */
+  .ih-welcome-dot {
+    display: inline-block;
+    animation: dotBeat 2.6s ease-in-out infinite;
+  }
+  @keyframes dotBeat {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%      { transform: scale(1.5); opacity: 0.65; }
+  }
+
+  /* fits carousel gets a slow ken-burns push */
+  .ih-fits-slide.on { animation: ihDrift 7s ease-out forwards, ihZoom 9s ease-in-out infinite alternate; }
+  @keyframes ihZoom {
+    from { filter: saturate(1);    }
+    to   { filter: saturate(1.18); }
+  }
+
+  /* page dots wake up */
+  .ih-dot { transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  .ih-dot.on { animation: dotBeat 3.2s ease-in-out infinite; }
+
+  /* scroll-reveal hook for anything JS tags */
+  .reveal      { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.seen { opacity: 1; transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Respect the setting. If they asked for less, they get less.
+   ════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ticker-track { animation: tickerScroll 240s linear infinite !important; }
+  .poster-type, .desktop-portrait, .folder, .desktop-note { translate: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+
+/* ── Poster type, re-fitted for DTTG ──────────────────────────────────
+   Anton is ultra-condensed (~3.6 width units per em); DTTG runs ~5.3.
+   Same 17vw that gave Anton comfortable margins pushes DTTG to 90% of
+   the viewport. Pulled back so the poster keeps its air. */
+.poster-line {
+  font-size: clamp(52px, 15.4vw, 224px);
+}
+
+/* smaller parallax throw so it never kisses the edges */
+.poster-type {
+  translate: calc(var(--mx) * -12px) calc(var(--my) * -9px);
+}
+
+/* ── Tape strip: warm and translucent, not a grey smudge ── */
+.dn-tape {
+  width: 74px;
+  height: 15px;
+  top: -8px;
+  border-radius: 1px;
+  background: linear-gradient(
+    170deg,
+    rgba(255, 233, 202, 0.30),
+    rgba(255, 214, 176, 0.16));
+  border: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 220, 0.16),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px) brightness(1.35);
+  -webkit-backdrop-filter: blur(2px) brightness(1.35);
+  /* torn edges */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+}
+
+/* tape needs real opacity to read as tape over a near-black desk */
+.dn-tape {
+  background: linear-gradient(170deg,
+    rgba(255, 236, 208, 0.62),
+    rgba(240, 206, 168, 0.42));
+  box-shadow: inset 0 0 0 1px rgba(255, 245, 230, 0.3),
+              0 3px 8px rgba(0, 0, 0, 0.4);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ── Mobile app labels, re-fitted for DTTG ──
+   DTTG sets wider than the system face, so "Things I Like" was hitting
+   the ellipsis. Slightly smaller with tighter tracking, and the label
+   is allowed to wrap to two lines instead of getting cut off. */
+@media (max-width: 768px) {
+  .ih-label {
+    font-size: 11px;
+    letter-spacing: 0.01em;
+    max-width: 92px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.15;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+/* fixed-width keycaps so the three hint lines start on the same axis */
+.dn-key {
+  width: 42px;
+  min-width: 42px;
+  padding: 0;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
+   MOBILE, REBUILT ON THE DESKTOP BACKGROUND
+   Same radial gradient and drifting aurora as the desk. The photo
+   wallpaper was carrying the whole lower half of this screen, so the
+   poster type and ticker come across from desktop to fill the space
+   it leaves behind.
+   ════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  .iphone-home {
+    background: radial-gradient(ellipse at 30% 40%,
+                #1e1030 0%, #0d0d14 55%, #090910 100%);
+    background-position: initial;
+    background-attachment: initial;
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* -- the same two aurora blobs, pinned so they don't scroll away -- */
+  .iphone-home::before,
+  .iphone-home::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(70px);
+  }
+  .iphone-home::before {
+    width: 92vw; height: 92vw;
+    top: -22vw; left: -28vw;
+    background: radial-gradient(circle, rgba(124, 72, 220, 0.42), transparent 68%);
+    animation: ihAuroraA 24s ease-in-out infinite alternate;
+  }
+  .iphone-home::after {
+    width: 80vw; height: 80vw;
+    bottom: -24vw; right: -22vw;
+    background: radial-gradient(circle, rgba(255, 82, 24, 0.26), transparent 68%);
+    animation: ihAuroraB 30s ease-in-out infinite alternate;
+  }
+  @keyframes ihAuroraA {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(16vw, 10vw) scale(1.18); }
+    100% { transform: translate(6vw, 22vw) scale(0.92); }
+  }
+  @keyframes ihAuroraB {
+    0%   { transform: translate(0, 0) scale(1.06); }
+    50%  { transform: translate(-18vw, -9vw) scale(0.88); }
+    100% { transform: translate(-7vw, -20vw) scale(1.2); }
+  }
+
+  /* everything real sits above the ambience */
+  .ih-welcome, .ih-widget-row, .ih-cd, .ih-grid,
+  .ih-dots, .ih-dock, .ih-ticker { position: relative; z-index: 2; }
+
+  /* -- poster type: the name IS the wallpaper, phone edition -- */
+  .ih-poster {
+    position: fixed;
+    left: 0; right: 0;
+    top: 46%;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+    /* drifts up slowly as you scroll */
+    translate: 0 calc(var(--scrollShift, 0px) * -0.55);
+    animation: ihPosterIn 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .ih-poster-line {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+    font-size: 17vw;
+    line-height: 0.86;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+  }
+  .ih-poster-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.16);
+    animation: outlineBreathe 7s ease-in-out infinite;
+  }
+  .ih-poster-fill {
+    background: linear-gradient(100deg,
+      #f3e7d3 0%, #b5a3c9 34%,
+      #fff6e6 47%, #ffd9b8 51%, #b5a3c9 56%,
+      #5d4a78 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.34;
+    animation: posterSheen 9s ease-in-out infinite;
+  }
+  @keyframes ihPosterIn {
+    from { opacity: 0; scale: 0.94; }
+    to   { opacity: 1; scale: 1; }
+  }
+
+  /* -- ticker, lifted from the desktop, sits above the dock -- */
+  .ih-ticker {
+    overflow: hidden;
+    padding: 9px 0;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(12, 10, 18, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    pointer-events: none;
+    animation: ihRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
+  }
+  .ih-ticker-track {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: tickerScroll 34s linear infinite;
+  }
+  .ih-ticker-track span {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+    font-size: 10px;
+    letter-spacing: 0.17em;
+    color: rgba(255, 255, 255, 0.42);
+  }
+  .ih-ticker-track em {
+    font-style: normal;
+    font-family: var(--font-body);
+    color: rgba(255, 158, 80, 0.8);
+    padding: 0 6px;
+    animation: starTwinkle 2.6s ease-in-out infinite;
+  }
+
+  /* -- app icons breathe, like the desktop folders bob -- */
+  .ih-grid .ih-icon {
+    animation: ihIconBob 6s ease-in-out infinite;
+  }
+  .ih-grid .ih-app:nth-child(1) .ih-icon { animation-delay: 0s;    }
+  .ih-grid .ih-app:nth-child(2) .ih-icon { animation-delay: -1.5s; }
+  .ih-grid .ih-app:nth-child(3) .ih-icon { animation-delay: -3s;   }
+  .ih-grid .ih-app:nth-child(4) .ih-icon { animation-delay: -4.5s; }
+  @keyframes ihIconBob {
+    0%, 100% { transform: translateY(0)    rotate(0deg);    }
+    50%      { transform: translateY(-5px) rotate(-1.5deg); }
+  }
+
+  /* dock icons drift on an offset rhythm so it never looks synced */
+  .ih-dock .ih-icon { animation: ihIconBob 7.5s ease-in-out infinite; }
+  .ih-dock .ih-dock-app:nth-child(1) .ih-icon { animation-delay: -0.6s; }
+  .ih-dock .ih-dock-app:nth-child(2) .ih-icon { animation-delay: -2.4s; }
+  .ih-dock .ih-dock-app:nth-child(3) .ih-icon { animation-delay: -4.2s; }
+  .ih-dock .ih-dock-app:nth-child(4) .ih-icon { animation-delay: -6s;   }
+
+  /* the CD glow reads brighter now there's no photo behind it */
+  .ih-cd::before {
+    background: radial-gradient(circle at 18% 50%, rgba(255, 96, 40, 0.3), transparent 48%);
+  }
+
+  /* widgets get a touch more contrast against the gradient */
+  .ih-welcome { background: rgba(16, 14, 24, 0.5); }
+  .ih-cd      { background: rgba(14, 13, 18, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ih-poster { translate: none !important; }
+  .ih-ticker-track { animation: tickerScroll 240s linear infinite !important; }
+}
+
+/* ── Poster type, corrected ──────────────────────────────────────────
+   First pass pinned this at a fixed 46% and it landed straight behind
+   the app labels while the real void sat below them. It now takes over
+   the flex spacer, so it simply grows into whatever room is left after
+   the widgets and dock have taken theirs — no magic percentages. */
+@media (max-width: 768px) {
+  .ih-poster {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 104px;
+    top: auto;
+    inset: auto;
+    translate: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
+    padding: 6px 0;
+  }
+  .ih-poster-line {
+    font-size: min(17.5vw, 82px);
+  }
+  /* nothing sits behind it now, so it can carry more weight */
+  .ih-poster-fill { opacity: 0.62; }
+  .ih-poster-outline { -webkit-text-stroke-width: 1.4px; }
+}
+
+/* a touch more air at the edges */
+@media (max-width: 768px) {
+  .ih-poster-line { font-size: min(16.2vw, 76px); }
+}
+
+/* ── Short phones: let the page scroll instead of crushing widgets ──
+   .iphone-home is a 100dvh flex column, so on an SE-height screen the
+   children were shrinking below their content and clipping text. Pin
+   them to their natural height and let the poster give up its space
+   first; if there's still not enough, the container scrolls. */
+@media (max-width: 768px) {
+  .ih-welcome, .ih-widget-row, .ih-cd, .ih-grid,
+  .ih-ticker, .ih-dots, .ih-dock {
+    flex-shrink: 0;
+  }
+  .ih-poster { min-height: 0; }
+}
+@media (max-width: 768px) and (min-height: 720px) {
+  .ih-poster { min-height: 104px; }
+}
+
+/* below 720px tall there's no room for the poster — a squeezed sliver of
+   "MIKEY" peeking under the app labels reads as a glitch, so drop it */
+@media (max-width: 768px) and (max-height: 719px) {
+  .ih-poster { display: none; }
+}

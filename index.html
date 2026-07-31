@@ -43,6 +43,7 @@
         <a href="https://tiktok.com" target="_blank" class="topbar-icon" title="TikTok">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
         </a>
+        <button class="dn-reopen" id="dn-reopen" title="What is this?" aria-label="Show the read me note">?</button>
         <span class="topbar-clock" id="clock"></span>
       </div>
     </header>
@@ -89,6 +90,28 @@
       </div>
 
     </div>
+
+    <!-- Read me note: the desktop version of the mobile welcome widget -->
+    <aside class="desktop-note" id="desktop-note">
+      <span class="dn-tape" aria-hidden="true"></span>
+      <div class="dn-head">
+        <span class="dn-dots" aria-hidden="true">
+          <span class="dn-dot dn-live"></span>
+          <span class="dn-dot"></span>
+        </span>
+        <p class="dn-title">Welcome to my mind<span class="dn-title-dot">.</span></p>
+        <button class="dn-close" id="dn-close" aria-label="Close note">&times;</button>
+      </div>
+      <p class="dn-body">
+        This is my desktop. Every folder on it is something I made or something
+        I love &mdash; the music, the fits, the designs, the things I like.
+      </p>
+      <ul class="dn-hint-list">
+        <li><span class="dn-key">2&times;</span> Double-click a folder to open it</li>
+        <li><span class="dn-key">Drag</span> Move them anywhere. Make it yours</li>
+        <li><span class="dn-key">Esc</span> Closes whatever you opened</li>
+      </ul>
+    </aside>
 
     <!-- Ticker -->
     <div class="ticker" aria-hidden="true">
@@ -161,7 +184,19 @@
       </button>
     </div>
 
-    <div class="ih-spacer"></div>
+    <!-- poster type: fills the space the photo wallpaper used to hold -->
+    <div class="ih-poster" aria-hidden="true">
+      <span class="ih-poster-line ih-poster-outline">YOUFOUND</span>
+      <span class="ih-poster-line ih-poster-fill">MIKEY</span>
+    </div>
+
+    <!-- ticker, same as the desktop one -->
+    <div class="ih-ticker" aria-hidden="true">
+      <div class="ih-ticker-track">
+        <span>YOUFOUNDMIKEY <em>✶</em> MUSIC <em>✶</em> DESIGN <em>✶</em> FITS <em>✶</em> THINGS I LIKE <em>✶</em>&nbsp;</span>
+        <span>YOUFOUNDMIKEY <em>✶</em> MUSIC <em>✶</em> DESIGN <em>✶</em> FITS <em>✶</em> THINGS I LIKE <em>✶</em>&nbsp;</span>
+      </div>
+    </div>
 
     <!-- page dots -->
     <div class="ih-dots"><span class="ih-dot on"></span><span class="ih-dot"></span></div>
