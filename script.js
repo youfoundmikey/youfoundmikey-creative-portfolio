@@ -603,30 +603,40 @@ const prefersReducedMotion =
   const desk = document.querySelector('.desktop');
   if (!desk) return;
 
-  let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+  let tx = 0, ty = 0, cx = 0, cy = 0, raf = null, last = 0;
 
-  function frame() {
-    // ease toward the pointer so it glides instead of snapping
-    cx += (tx - cx) * 0.08;
-    cy += (ty - cy) * 0.08;
+  // Time-based easing, not per-frame. A fixed 0.08 step per frame means the
+  // parallax speed rides on the frame rate: smooth at 60fps, glacial the
+  // moment the tab drops frames, twice as fast on a 120Hz display. This
+  // reaches the cursor in ~180ms no matter what the frame rate is doing.
+  const RESPONSE = 0.18;
+
+  function frame(now) {
+    const dt = last ? Math.min((now - last) / 1000, 0.1) : 0.016;
+    last = now;
+    const k = 1 - Math.pow(0.001, dt / RESPONSE);
+    cx += (tx - cx) * k;
+    cy += (ty - cy) * k;
     desk.style.setProperty('--mx', cx.toFixed(4));
     desk.style.setProperty('--my', cy.toFixed(4));
-    raf = (Math.abs(tx - cx) > 0.001 || Math.abs(ty - cy) > 0.001)
-      ? requestAnimationFrame(frame)
-      : null;
+    if (Math.abs(tx - cx) > 0.0005 || Math.abs(ty - cy) > 0.0005) {
+      raf = requestAnimationFrame(frame);
+    } else {
+      raf = null; last = 0;
+    }
   }
 
   window.addEventListener('mousemove', e => {
     if (isMobile()) return;
     tx = (e.clientX / window.innerWidth  - 0.5) * 2;
     ty = (e.clientY / window.innerHeight - 0.5) * 2;
-    if (!raf) raf = requestAnimationFrame(frame);
+    if (!raf) { last = 0; raf = requestAnimationFrame(frame); }
   }, { passive: true });
 
   // drift back to centre when the cursor leaves the window
   window.addEventListener('mouseleave', () => {
     tx = 0; ty = 0;
-    if (!raf) raf = requestAnimationFrame(frame);
+    if (!raf) { last = 0; raf = requestAnimationFrame(frame); }
   });
 })();
 
